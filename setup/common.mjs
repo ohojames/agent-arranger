@@ -29,8 +29,6 @@ export const MCP = {
   context7: { kind: 'npm', entry: ['@upstash', 'context7-mcp', 'dist', 'index.js'], args: [] },
   // open the real page, screenshot, read the console
   'chrome-devtools': { kind: 'npm', entry: ['chrome-devtools-mcp', 'build', 'src', 'bin', 'chrome-devtools-mcp.js'], args: ['--isolated'] },
-  // find code by symbol through LSP (find_referencing_symbols catches "missed a spot")
-  serena: { kind: 'uv', pkg: 'serena-agent', exe: 'serena', args: ['start-mcp-server', '--project-from-cwd'] },
 };
 
 /** Claude Code hooks: [event, matcher|null, script, timeout, enabled(cfg)] */
@@ -51,7 +49,7 @@ export function tools() {
       present: () => fs.existsSync(path.join(HOME, '.claude')) || Boolean(findClaude()),
       rules: path.join(HOME, '.claude', 'CLAUDE.md'),
       skills: path.join(HOME, '.claude', 'skills'),
-      mcp: { file: path.join(HOME, '.claude.json'), key: 'mcpServers', servers: Object.keys(MCP), serenaContext: 'claude-code' },
+      mcp: { file: path.join(HOME, '.claude.json'), key: 'mcpServers', servers: Object.keys(MCP) },
     },
     codex: {
       name: 'Codex CLI / ChatGPT desktop (Codex)',
@@ -67,7 +65,7 @@ export function tools() {
       designRulesFile: path.join(HOME, '.gemini', 'config', 'rules', 'agent-arranger-design.md'),
       skills: path.join(HOME, '.gemini', 'config', 'skills'),
       // Antigravity ships its own browser tool, so chrome-devtools is not added there
-      mcp: { file: path.join(HOME, '.gemini', 'config', 'mcp_config.json'), key: 'mcpServers', servers: ['context7', 'serena'], serenaContext: 'antigravity' },
+      mcp: { file: path.join(HOME, '.gemini', 'config', 'mcp_config.json'), key: 'mcpServers', servers: ['context7'] },
     },
     zcode: {
       name: 'ZCode',
@@ -198,23 +196,11 @@ export function which(name) {
   return r.status === 0 ? r.stdout.split(/\r?\n/).find(Boolean)?.trim() || null : null;
 }
 
-/** Run a command; npm/uv shims on Windows need a shell. Never prints secrets — none are passed. */
+/** Run a command; npm shims on Windows need a shell. Never prints secrets — none are passed. */
 export function run(cmd, args, opts = {}) {
   const shell = IS_WIN && !/\.exe$/i.test(cmd);
   const r = spawnSync(cmd, args, { encoding: 'utf8', windowsHide: true, shell, timeout: 600_000, ...opts });
   return { ok: r.status === 0, out: `${r.stdout || ''}${r.stderr || ''}`.trim(), status: r.status };
-}
-
-export function findUv() {
-  const exe = IS_WIN ? 'uv.exe' : 'uv';
-  for (const c of [path.join(HOME, '.local', 'bin', exe), path.join(HOME, '.cargo', 'bin', exe)]) if (fs.existsSync(c)) return c;
-  return which('uv');
-}
-
-export function findSerena() {
-  const exe = IS_WIN ? 'serena.exe' : 'serena';
-  const c = path.join(HOME, '.local', 'bin', exe);
-  return fs.existsSync(c) ? c : which('serena');
 }
 
 export const slash = (p) => p.replace(/\\/g, '/');

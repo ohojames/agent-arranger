@@ -3,7 +3,7 @@
 //
 //   node install.mjs                 install / update for every AI tool found on this machine
 //   node install.mjs --only claude   limit to some tools (claude,codex,antigravity,zcode)
-//   node install.mjs --offline       skip downloads (MCP packages, serena, plugins) — says so in the summary
+//   node install.mjs --offline       skip downloads (MCP packages, plugins) — says so in the summary
 //
 // Safe to run again: it replaces its own pieces and records what it changed in ~/.agent-arranger/manifest.json
 // so uninstall.mjs can put every file back.
@@ -12,7 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {
   REPO, HOME, DEST, MARK, PLUGINS, MCP, CLAUDE_HOOKS, tools, readJson, writeJson, loadConfig, loadManifest,
-  manifestFile, rulesBody, writeBlock, copyDir, findClaude, findUv, findSerena, run, slash,
+  manifestFile, rulesBody, writeBlock, copyDir, findClaude, run, slash,
 } from './setup/common.mjs';
 import { DEFAULT_CONFIG } from './core/lib.mjs';
 
@@ -171,30 +171,14 @@ if (mcpTargets.length) {
   } else {
     const r = run('npm', ['install', '--omit=dev', '--no-audit', '--no-fund'], { cwd: DEST });
     note('MCP npm', r.ok ? 'ติดตั้งแล้ว' : 'ไม่สำเร็จ', r.ok ? 'context7, chrome-devtools' : r.out.split('\n').at(-1).slice(0, 120));
-    if (!findSerena()) {
-      const uv = findUv();
-      if (uv) {
-        const u = run(uv, ['tool', 'install', 'serena-agent']);
-        note('MCP serena', u.ok ? 'ติดตั้งแล้ว' : 'ไม่สำเร็จ', u.ok ? '' : u.out.split('\n').at(-1).slice(0, 120));
-      } else {
-        note('MCP serena', 'ข้าม: ไม่พบ uv', 'ติดตั้ง uv (https://docs.astral.sh/uv/) แล้วรัน install.mjs ใหม่');
-      }
-    }
   }
-  const serena = findSerena();
   for (const [, t] of mcpTargets) {
     const added = [];
     for (const name of t.mcp.servers) {
       const def = MCP[name];
-      let entry;
-      if (def.kind === 'npm') {
-        const js = path.join(DEST, 'node_modules', ...def.entry);
-        if (fs.existsSync(js)) entry = { command: 'node', args: [js, ...def.args] };
-      } else if (serena) {
-        entry = { command: serena, args: [...def.args, '--context', t.mcp.serenaContext] };
-      }
-      if (!entry) continue;
-      setKey(t.mcp.file, [t.mcp.key, name], entry);
+      const js = path.join(DEST, 'node_modules', ...def.entry);
+      if (!fs.existsSync(js)) continue;
+      setKey(t.mcp.file, [t.mcp.key, name], { command: 'node', args: [js, ...def.args] });
       added.push(name);
     }
     const missing = t.mcp.servers.filter((x) => !added.includes(x));

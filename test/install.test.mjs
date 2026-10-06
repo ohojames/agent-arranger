@@ -12,7 +12,7 @@ const REPO = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const HOME = fs.mkdtempSync(path.join(os.tmpdir(), 'aa-home-'));
 const env = { ...process.env, HOME, USERPROFILE: HOME, APPDATA: path.join(HOME, 'AppData', 'Roaming') };
 delete env.AGENT_ARRANGER_HOME;
-// keep the host's own tools (serena, claude, uv on PATH) out of the test machine
+// keep the host's own tools (claude on PATH) out of the test machine
 env.PATH = [path.dirname(process.execPath), path.join(process.env.SystemRoot || 'C:\\Windows', 'System32'), '/usr/bin', '/bin'].join(path.delimiter);
 for (const k of Object.keys(env)) if (k.toLowerCase() === 'path' && k !== 'PATH') delete env[k];
 const node = (script, ...args) => spawnSync(process.execPath, [path.join(REPO, script), ...args], { env, encoding: 'utf8', cwd: HOME });
@@ -77,8 +77,8 @@ test('install adds everything for each tool found, keeps the user’s own conten
   const mcp = json('.claude.json').mcpServers;
   assert.equal(mcp.other.command, 'x');
   assert.match(mcp.context7.args[0], /context7-mcp[\\/]dist[\\/]index\.js$/);
-  assert.equal(mcp.serena, undefined, 'missing binaries are not registered');
-  assert.match(r.stdout, /ยังไม่มี: chrome-devtools, serena/, 'missing MCP servers are reported');
+  assert.equal(mcp['chrome-devtools'], undefined, 'missing binaries are not registered');
+  assert.match(r.stdout, /ยังไม่มี: chrome-devtools/, 'missing MCP servers are reported');
   assert.ok(json('.gemini/config/mcp_config.json').mcpServers.context7);
 });
 

@@ -7,7 +7,7 @@ repo นี้เป็น **private** ใช้ภายในบริษั�
 
 Plugins และ MCP ไม่ได้อยู่ใน repo นี้ ตัวติดตั้งดาวน์โหลดจากต้นทาง:
 - `obra/superpowers` (plugin superpowers), `anthropics/skills` (plugin document-skills)
-- npm `@upstash/context7-mcp`, `chrome-devtools-mcp`; uv `serena-agent`
+- npm `@upstash/context7-mcp`, `chrome-devtools-mcp`
 
 | skill | ที่มา / สัญญาอนุญาต |
 |---|---|
