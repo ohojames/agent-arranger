@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+        node: [18, 22]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Unit + install/uninstall tests (offline, throwaway HOME)
+        run: npm test
+
+  # The real online path a teammate gets: downloads MCP packages and installs into a clean HOME.
+  online-install:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install into a clean HOME
+        shell: bash
+        run: |
+          export HOME="$RUNNER_TEMP/home" USERPROFILE="$RUNNER_TEMP/home"
+          mkdir -p "$HOME/.claude"
+          node install.mjs --only claude
+          node doctor.mjs || true
+          node -e "const j=require(require('path').join(process.env.HOME,'.claude.json'));const n=Object.keys(j.mcpServers||{});console.log('mcp:',n);if(!n.includes('context7')||!n.includes('chrome-devtools'))process.exit(1)"
+          node uninstall.mjs
