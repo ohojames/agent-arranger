@@ -12,5 +12,6 @@ then end the summary with a section that starts with the exact line `## Handoff`
 ### ไฟล์ที่เกี่ยวข้อง — path:line — why it matters
 ### กับดัก — gotchas found (env, accounts, flaky tests)
 
-A hook copies this section to `.claude/handoff.md` so a new chat, another AI tool or a teammate can
-continue. The full chat stays readable in `.claude/history/`. Never clear a session to save context.
+This section keeps the work going in the same chat. The note `.claude/handoff.md` (for a new chat,
+another AI tool or a teammate) is written only when the user runs `/ai-proceed` — never by a hook.
+The full chat stays readable in `.claude/history/`. Never clear a session to save context.

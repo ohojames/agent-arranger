@@ -76,6 +76,16 @@ When the task changed one value in many places (colour, class, label, field name
 If the turn carried a `<context-size>` notice, the last line of the report says auto-compact did not run and to check `autoCompactWindow` — never clear the session.
 If a route skill is not installed in this tool (Antigravity, Cursor), follow its intent inline and say so in the report.
 
+## 7. Handoff note — written only here
+
+No hook writes `.claude/handoff.md`; this skill is its only writer. After the report:
+
+1. Path: `<repo root, or cwd>/.claude/handoff.md`. If it exists, copy it to `.claude/history/handoff/<YYYY-MM-DD-HH-mm-ss>.md` first.
+2. Write ≤60 lines, facts only, these sections: `เป้าหมาย` · `ทำแล้ว (หลักฐาน)` (item + check → result) · `การตัดสินใจ` · `ผู้ใช้สั่งไว้` (every correction, verbatim-short) · `ค้างอยู่ / ขั้นถัดไป` · `ไฟล์ที่เกี่ยวข้อง` · `กับดัก`. Keep items from the old note that are still open; no diffs or tool output.
+3. Claude Code: export the chat — `node "<home>/.agent-arranger/core/export-history.mjs" "<folder in <home>/.claude/projects/ holding this session's .jsonl>" "<root>/.claude/history"` (`<home>` = the user's home folder as an absolute path).
+4. Git repo → make sure `.claude/` is in `.git/info/exclude`.
+5. Add one line to the report: `บันทึก handoff: <path> (<N> บรรทัด)`. Never clear or restart the session — context is shrunk by auto-compact.
+
 ## Common mistakes
 
 | Mistake | Fix |

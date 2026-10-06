@@ -68,19 +68,6 @@ export function transcriptToMarkdown(jsonlText, id) {
   return { markdown: header + parts.join(''), users, first };
 }
 
-// The text of the newest compact summary in a transcript, or null when the session was never compacted.
-export function latestCompactSummary(jsonlText) {
-  let found = null;
-  for (const line of jsonlText.split('\n')) {
-    if (!line.includes('"isCompactSummary":true')) continue;
-    try {
-      const e = JSON.parse(line);
-      found = { text: textOf(e.message?.content).trim(), ts: e.timestamp || '' };
-    } catch {}
-  }
-  return found;
-}
-
 export function exportHistory(transcriptsDir, outDir) {
   const results = [];
   let files;

@@ -130,29 +130,17 @@ test('pre-compact: exports the running session before it is summarized', () => {
   assert.match(fs.readFileSync(path.join(cwd, '.claude', 'history', '2026-10-06_sess.md'), 'utf8'), /งานหลังย่อ/);
 });
 
-test('load-handoff after compact: writes handoff.md from the summary, archives the old note, does not re-inject', () => {
+test('load-handoff after compact: never writes handoff.md (only /ai-proceed does), still exports history', () => {
   const { cwd, f } = compactedSession(SUMMARY);
   const note = path.join(cwd, '.claude', 'handoff.md');
-  fs.mkdirSync(path.dirname(note), { recursive: true });
-  fs.writeFileSync(note, '# Handoff เก่า\n');
   const r = hook('load-handoff.mjs', { source: 'compact', cwd, transcript_path: f });
   assert.equal(r.status, 0);
-  const now = fs.readFileSync(note, 'utf8');
-  assert.match(now, /ทดสอบย่อ/);
-  assert.ok(!now.includes('Primary Request'), 'only the ## Handoff section');
-  const archived = fs.readdirSync(path.join(cwd, '.claude', 'history', 'handoff'));
-  assert.equal(archived.length, 1);
-  assert.match(fs.readFileSync(path.join(cwd, '.claude', 'history', 'handoff', archived[0]), 'utf8'), /Handoff เก่า/);
+  assert.ok(!fs.existsSync(note), 'no note written by the hook');
+  assert.ok(!fs.existsSync(path.join(cwd, '.claude', 'history', 'handoff')), 'nothing archived');
+  assert.match(fs.readFileSync(path.join(cwd, '.claude', 'history', '2026-10-06_sess.md'), 'utf8'), /งานหลังย่อ/);
+  // an existing note is left exactly as it was
+  fs.writeFileSync(note, '# Handoff จาก ai-proceed\n');
+  hook('load-handoff.mjs', { source: 'compact', cwd, transcript_path: f });
+  assert.equal(fs.readFileSync(note, 'utf8'), '# Handoff จาก ai-proceed\n');
   assert.doesNotMatch(r.stdout, /ทดสอบย่อ/, 'summary is already in context');
-  // same summary again → no second archive copy
-  hook('load-handoff.mjs', { source: 'compact', cwd, transcript_path: f });
-  assert.equal(fs.readdirSync(path.join(cwd, '.claude', 'history', 'handoff')).length, 1);
-});
-
-test('load-handoff after compact without a ## Handoff section: keeps the whole summary and says so', () => {
-  const { cwd, f } = compactedSession('Summary:\n1. Primary Request: งานทั้งก้อน\n');
-  hook('load-handoff.mjs', { source: 'compact', cwd, transcript_path: f });
-  const now = fs.readFileSync(path.join(cwd, '.claude', 'handoff.md'), 'utf8');
-  assert.match(now, /งานทั้งก้อน/);
-  assert.match(now, /ไม่พบหัวข้อ ## Handoff/);
 });
