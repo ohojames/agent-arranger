@@ -93,7 +93,7 @@ export function writeLessons(list) {
   fs.writeFileSync(path.join(learningDir(), 'lessons.json'), JSON.stringify(list, null, 1) + '\n');
 }
 
-/** Written from the compact summary and read by load-handoff: <repo root or cwd>/.claude/handoff.md */
+/** Written by the ai-proceed skill only, read by load-handoff: <repo root or cwd>/.claude/handoff.md */
 export function handoffFile(cwd) {
   const root = run('git', ['rev-parse', '--show-toplevel'], cwd) || cwd;
   return path.join(root, '.claude', 'handoff.md');
