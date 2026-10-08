@@ -27,6 +27,8 @@ test('a repeated correction is logged and the agent is asked to propose a lesson
   assert.doesNotMatch(prompt(dir, 'เปลี่ยนสีตัวอักษรหัวตารางเป็นสีน้ำเงินทุกหน้า'), /<repeat-correction>/);
   assert.doesNotMatch(prompt(dir, 'Another Claude session sent a message: งานยังไม่ครบ'), /<repeat-correction>/);
   assert.doesNotMatch(prompt(dir, '[SYSTEM NOTIFICATION - NOT USER INPUT] task ยังไม่แก้'), /<repeat-correction>/);
+  // the summary Claude Code sends after compaction quotes old complaints — 12 of 28 logged entries were these
+  assert.doesNotMatch(prompt(dir, 'This session is being continued from a previous conversation that ran out of context. ผู้ใช้บ่นว่าลืมเปลี่ยนสี'), /<repeat-correction>/);
   assert.equal(fs.readFileSync(path.join(dir, 'corrections.jsonl'), 'utf8').trim().split('\n').length, 1);
 });
 
@@ -37,6 +39,7 @@ test('swearing and plain complaints count as corrections; ordinary words that co
     'รูปแบบการรายงานใหม่ใช้ยากชิบหาย มึงปัญาอ่อนหรือเปล่า อ่านก็ยาก ไอ่สัด ไปแก้ไขมาใหม่',
     'ยังไม่ตรงกับแบบที่ผมต้องการ อยากให้ปรับเป็น Bullet',
     'มึงเป็นควยไรเนี่ย ทำแบบนี้',
+    'ไอ่แม่เย็น โครงการนี้ให้ใช้อีเมลนี้',
   ]) assert.match(prompt(dir, m), /<repeat-correction>/, m);
   for (const m of [
     'ถ้าทำ product มาแล้วกากกว่าที่มีในตลาด ก็ไม่รู้จะทำเพื่อ',

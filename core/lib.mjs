@@ -66,9 +66,9 @@ export function contextTokens(transcriptPath) {
 // "ทุกหน้า"/"ทุกจุด" alone are instructions, not complaints, so they are not in the pattern.
 // Swearing and "hard to use / not what I asked" are complaints too (2026-10-08: three in one chat were missed).
 // "สัด" only with ไอ่/ไอ้ so สัดส่วน is not a complaint; "กาก" is left out — the user uses it about products.
-export const CORRECTION_RE = /ไม่ครบ|อีกแล้ว|บอกแล้ว|บอกไปแล้ว|เคยบอก|เคยแจ้ง|ยังไม่(ได้)?(แก้|เปลี่ยน)|ทำไม(มึง|คุณ)?(ยัง)?ไม่|ผิดอีก|ตกหล่น|ลืม|ชิบหาย|ปัญญ?าอ่อน|(ไอ่|ไอ้)สั[ดส]|สัส|ควย|เหี้ย|โง่|ใช้ยาก|อ่านยาก|ยังไม่ตรง|ไม่ใช่แบบที่|ไม่ใช่อย่างที่/;
-// Relayed subagent reports and harness notifications also arrive through UserPromptSubmit.
-export const NOT_FROM_USER_RE = /^\s*(Another Claude session sent a message|\[SYSTEM NOTIFICATION|<task-notification>|<agent-message)/;
+export const CORRECTION_RE = /ไม่ครบ|อีกแล้ว|บอกแล้ว|บอกไปแล้ว|เคยบอก|เคยแจ้ง|ยังไม่(ได้)?(แก้|เปลี่ยน)|ทำไม(มึง|คุณ)?(ยัง)?ไม่|ผิดอีก|ตกหล่น|ลืม|ชิบหาย|ปัญญ?าอ่อน|(ไอ่|ไอ้)สั[ดส]|สัส|ควย|เหี้ย|โง่|ใช้ยาก|อ่านยาก|ยังไม่ตรง|ไม่ใช่แบบที่|ไม่ใช่อย่างที่|เย็ด|แม่เย็น/;
+// Relayed subagent reports, harness notifications and the post-compaction summary also arrive through UserPromptSubmit.
+export const NOT_FROM_USER_RE = /^\s*(This session is being continued from a previous conversation|Another Claude session sent a message|\[SYSTEM NOTIFICATION|<task-notification>|<agent-message)/;
 export const LESSON_TAGS = ['ship', 'fix', 'build', 'ui', 'db', 'change-all', 'any'];
 
 export function correctionTopic(text) {
