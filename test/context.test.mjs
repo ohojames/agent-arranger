@@ -55,6 +55,15 @@ test('route-prompt: count-proof rule for changing a value everywhere', () => {
   assert.match(out, /ก่อน → หลัง/);
 });
 
+test('route-prompt: decide what is reversible, ask one yes/no question by button — no option table, no codes to type', () => {
+  const { dir, f } = transcript(10_000);
+  const out = hook('route-prompt.mjs', { prompt: 'ทำต่อ', cwd: dir, transcript_path: f }).stdout;
+  assert.match(out, /AskUserQuestion/);
+  assert.match(out, /ตัดสินใจเอง/);
+  assert.doesNotMatch(out, /ตัวเลือก \| ผลกระทบ/);
+  assert.doesNotMatch(out, /เรื่องที่ต้องตัดสินใจ/);
+});
+
 test('load-handoff: loads after /clear, skips stale file at startup, silent when absent', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ho-'));
   assert.equal(hook('load-handoff.mjs', { source: 'clear', cwd: dir }).stdout.trim(), '');
