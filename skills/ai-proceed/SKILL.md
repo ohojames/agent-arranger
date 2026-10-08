@@ -71,8 +71,8 @@ Outward commands always stop for a yes: push, deploy, and applying a migration o
 
 ## 6. Finish
 
-Report in the global format (rules §6: **ผล** line → one-line bullets with evidence, incl. not done → decision table only if something needs the user's call). Add one bullet: `ใช้: <skills actually used> · งบส่วนเพิ่มจริง: ~<N>k`.
-When the task changed one value in many places (colour, class, label, field name), that item's bullet shows the search count `ก่อน N → หลัง 0` (or each remaining hit with its reason). No count, no "ครบ".
+Report in the global format (rules §6: filter first — **ผล** line with one piece of evidence → at most 3 bullets for bad news / not done / user action → decision table only if something needs the user's call). Put `ใช้: <skills actually used> · ~<N>k` inside the **ผล** line's brackets, not as a bullet.
+When the task changed one value in many places (colour, class, label, field name), the **ผล** line's evidence is the search count `ก่อน N → หลัง 0` (or each remaining hit with its reason). No count, no "ครบ".
 If the turn carried a `<context-size>` notice, the last line of the report says auto-compact did not run and to check `autoCompactWindow` — never clear the session.
 If a route skill is not installed in this tool (Antigravity, Cursor), follow its intent inline and say so in the report.
 
