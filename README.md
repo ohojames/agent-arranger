@@ -29,7 +29,8 @@ node agent-arranger/install.mjs
 |---|---|---|---|---|
 | กฎการทำงาน (ตรวจก่อนรายงาน, แก้ให้ครบทุกจุด, รูปแบบรายงาน, ออกแบบหน้าจอ) | ✅ | ✅ | ✅ | ✅ |
 | 27 skills (+ `docx` ผ่าน plugin) และ skill เสริม 19 ตัวที่เลือกติดตั้งได้ | ✅ | ✅ | ✅ | ✅ |
-| hooks: ฉีดกฎตามงาน, ตรวจ typecheck ก่อนบอกเสร็จ, ตรวจดีไซน์, เก็บบทเรียน | ✅ | — | — | — |
+| hooks: ฉีดกฎตามงาน, ตรวจ typecheck ก่อนบอกเสร็จ, ตรวจดีไซน์, จับคำตำหนิ (รวมคำด่า) แล้วร่างบทเรียนให้กดอนุมัติ | ✅ | — | — | — |
+| บทเรียนที่ผู้ใช้อนุมัติแล้ว ใช้ทุกเครื่องมือ (`lessons.mjs add`) | ✅ | ✅ | ✅ | ✅ |
 | ย่อ context อัตโนมัติที่ 300k ในแชทเดิม + เก็บประวัติแชทครบใน `.claude/history/` | ✅ | — | — | — |
 | plugins: superpowers, document-skills | ✅ | — | — | — |
 | MCP: context7, chrome-devtools | ✅ | — | context7 | — |
@@ -88,7 +89,7 @@ Restart your AI app once. The installer detects which tools you have (Claude Cod
 ### What you get
 
 - **All tools:** shared working rules and 27 skills (plus `docx` through the document-skills plugin). 19 more in `skills-optional/` — skills nobody on the reference machine used in 52 sessions — install with `--with <names>` or `--with all`.
-- **Claude Code (full set):** hooks that inject task-specific rules, block "done" while typecheck fails, lint UI against the design scale and learn from repeated corrections; automatic context compaction at 300k tokens in the same chat with the full chat history kept in `.claude/history/`; the superpowers and document-skills plugins; MCP servers context7 and chrome-devtools.
+- **Claude Code (full set):** hooks that inject task-specific rules, block "done" while typecheck fails, lint UI against the design scale and catch corrections (swearing included), drafting a lesson the user approves with one click — approved lessons are also written into the Codex, Antigravity and ZCode rules; automatic context compaction at 300k tokens in the same chat with the full chat history kept in `.claude/history/`; the superpowers and document-skills plugins; MCP servers context7 and chrome-devtools.
 - **Antigravity:** MCP context7 (it has its own browser tool).
 - The hand-off note `.claude/handoff.md` (for a new chat, another AI tool or a teammate) is written only when you run `/ai-proceed` — never automatically.
 

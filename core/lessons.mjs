@@ -11,7 +11,9 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { LESSON_TAGS, learningDir, readLessons, writeLessons } from './lib.mjs';
+import { LESSON_TAGS, learningDir, publishLessons, readLessons, writeLessons } from './lib.mjs';
+
+const published = (files) => files.length && console.log(`ส่งให้เครื่องมือที่ไม่มี hook แล้ว: ${files.join(', ')}`);
 
 const MAX_LESSONS = 40;
 const [cmd, ...rest] = process.argv.slice(2);
@@ -34,6 +36,7 @@ if (cmd === 'add') {
   list.push({ id, tags, text, created: new Date().toISOString().slice(0, 10) });
   writeLessons(list);
   console.log(`added ${id} [${tags.join(',')}] ${text}`);
+  published(publishLessons(list));
 } else if (cmd === 'list') {
   for (const l of readLessons()) console.log(`${l.id} [${l.tags.join(',')}] ${l.text}  (${l.created})`);
 } else if (cmd === 'remove') {
@@ -42,6 +45,7 @@ if (cmd === 'add') {
   if (next.length === list.length) { console.error(`no lesson ${rest[0]}`); process.exit(2); }
   writeLessons(next);
   console.log(`removed ${rest[0]}`);
+  published(publishLessons(next));
 } else if (cmd === 'report') {
   let rows = [];
   try {

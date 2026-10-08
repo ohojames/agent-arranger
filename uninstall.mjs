@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { HOME, DEST, MARK, readJson, writeJson, loadManifest, manifestFile, removeBlock, copyDir, findClaude, run, tools } from './setup/common.mjs';
+import { publishLessons } from './core/lib.mjs';
 
 const keepData = process.argv.includes('--keep-data');
 if (!fs.existsSync(manifestFile())) {
@@ -47,7 +48,8 @@ for (const [id, list] of Object.entries(m.skills)) {
   done.push(`skills (${id}): ถอน ${list.length} ตัว, คืนของเดิม ${list.filter((s) => s.backedUp).length} ตัว`);
 }
 
-// 3. Rules blocks
+// 3. Rules blocks (lessons first — they sit beside the rules block)
+for (const f of publishLessons([])) done.push(`บทเรียน: ${f}`);
 for (const tool of Object.values(t)) if (removeBlock(tool.rules)) done.push(`กฎ: ${tool.rules}`);
 
 // 4. Claude hooks (recognised by MARK) and every key we set, restored to its original value

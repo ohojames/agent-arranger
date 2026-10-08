@@ -15,7 +15,7 @@ import {
   REPO, HOME, DEST, MARK, PLUGINS, MCP, CLAUDE_HOOKS, tools, readJson, writeJson, loadConfig, loadManifest,
   manifestFile, rulesBody, writeBlock, copyDir, findClaude, run, slash,
 } from './setup/common.mjs';
-import { DEFAULT_CONFIG } from './core/lib.mjs';
+import { DEFAULT_CONFIG, lessonFiles, publishLessons, readLessons } from './core/lib.mjs';
 
 const argv = process.argv.slice(2);
 const offline = argv.includes('--offline');
@@ -139,6 +139,13 @@ for (const [id, t] of chosen) {
   m.skills[id] = list.filter((s) => skillNames.includes(s.name));
   note(t.name, 'กฎ + skills', `${skillNames.length} skills → ${slash(t.skills)}` + (dropped.length ? ` (ถอนตัวที่ไม่อยู่ในชุดแล้ว ${dropped.length})` : ''));
 }
+// Approved lessons for tools without a prompt hook (the rules block above was just rewritten)
+if (chosen.some(([id]) => id === 'antigravity')) {
+  track(lessonFiles().antigravity);
+  m.files[lessonFiles().antigravity].owned = true;
+}
+const lessonCount = readLessons().length;
+if (lessonCount) note('บทเรียน', `${lessonCount} ข้อ`, `ส่งให้ ${publishLessons().length} ไฟล์`);
 
 // 3. Claude Code: hooks, settings, plugins
 const claudeChosen = chosen.some(([id]) => id === 'claude');

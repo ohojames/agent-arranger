@@ -112,9 +112,11 @@ if (CORRECTION_RE.test(prompt) && !NOT_FROM_USER_RE.test(prompt)) {
   }
   out.push('');
   out.push(
-    '<repeat-correction>ผู้ใช้กำลังสั่งแก้เรื่องที่ควรถูกตั้งแต่แรก: แก้ให้ถูกและพิสูจน์ด้วยผลรันก่อน ' +
-      'แล้วท้ายรายงานเสนอ "บทเรียนกันซ้ำ" 1 บรรทัด รูปแบบ: เมื่อ <เงื่อนไข> → ต้อง <ทำอะไร> → ตรวจด้วย <อะไร> พร้อม tag ' +
-      '(ship|fix|build|ui|db|change-all|any) — บันทึกด้วย `node ~/.agent-arranger/core/lessons.mjs add --tags <tag> "<บทเรียน>"` หลังผู้ใช้อนุมัติเท่านั้น</repeat-correction>'
+    '<repeat-correction>ผู้ใช้กำลังตำหนิ: แก้ให้ถูกและพิสูจน์ด้วยผลรันก่อน ' +
+      'แล้วร่าง "บทเรียนกันซ้ำ" 1 บรรทัด (เมื่อ <เงื่อนไข> → ต้อง <ทำอะไร> → ตรวจด้วย <อะไร>) เลือก tag (ship|fix|build|ui|db|change-all|any) ' +
+      'แล้วถามคำถามเดียวว่าจะบันทึกไหม ใส่ร่างไว้ในคำถาม — Claude Code ใช้ AskUserQuestion ปุ่ม "บันทึก (แนะนำ)" / "ไม่ต้อง" ' +
+      'ผู้ใช้กดบันทึกแล้วรัน `node ~/.agent-arranger/core/lessons.mjs add --tags <tag> "<บทเรียน>"` ทันที ' +
+      'ซึ่งส่งบทเรียนไปทุกเครื่องมือเอง ห้ามบันทึกก่อนผู้ใช้ตอบ</repeat-correction>'
   );
 }
 // Claude Code auto-compacts as usage approaches autoCompactWindow (= CONTEXT_LIMIT in ~/.claude/settings.json).

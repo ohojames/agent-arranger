@@ -115,6 +115,18 @@ test('optional skills are remembered, and dropping one gives back the user’s c
   assert.equal(node('install.mjs', '--offline', '--with', 'vitest').status, 0, 'can be added back');
 });
 
+test('an approved lesson reaches the tools without a prompt hook (Codex, Antigravity)', () => {
+  const add = spawnSync(process.execPath, [p('.agent-arranger/core/lessons.mjs'), 'add', '--tags', 'ui', 'สีต้องมาจาก token กลาง'], { env, encoding: 'utf8' });
+  assert.equal(add.status, 0, add.stderr);
+  assert.match(fs.readFileSync(p('.codex/AGENTS.md'), 'utf8'), /<!-- END agent-arranger -->[\s\S]*สีต้องมาจาก token กลาง/);
+  const ag = fs.readFileSync(p('.gemini/config/rules/agent-arranger-lessons.md'), 'utf8');
+  assert.match(ag, /^---\ntrigger: always_on\n---/);
+  assert.match(ag, /สีต้องมาจาก token กลาง/);
+  assert.doesNotMatch(fs.readFileSync(p('.gemini/GEMINI.md'), 'utf8'), /token กลาง/, 'GEMINI.md stays under the 24 KB cap');
+  assert.equal(node('install.mjs', '--offline').status, 0);
+  assert.match(fs.readFileSync(p('.codex/AGENTS.md'), 'utf8'), /สีต้องมาจาก token กลาง/, 'reinstall keeps approved lessons');
+});
+
 test('uninstall restores the machine byte-for-byte', () => {
   const r = node('uninstall.mjs');
   assert.equal(r.status, 0, r.stderr);

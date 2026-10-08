@@ -64,7 +64,9 @@ export function contextTokens(transcriptPath) {
 // ---------- learning from repeated corrections ----------
 // Patterns came from 63 real correction prompts in our transcripts (2026-10-04 analysis).
 // "ทุกหน้า"/"ทุกจุด" alone are instructions, not complaints, so they are not in the pattern.
-export const CORRECTION_RE = /ไม่ครบ|อีกแล้ว|บอกแล้ว|บอกไปแล้ว|เคยบอก|เคยแจ้ง|ยังไม่(ได้)?(แก้|เปลี่ยน)|ทำไม(มึง|คุณ)?(ยัง)?ไม่|ผิดอีก|ตกหล่น|ลืม/;
+// Swearing and "hard to use / not what I asked" are complaints too (2026-10-08: three in one chat were missed).
+// "สัด" only with ไอ่/ไอ้ so สัดส่วน is not a complaint; "กาก" is left out — the user uses it about products.
+export const CORRECTION_RE = /ไม่ครบ|อีกแล้ว|บอกแล้ว|บอกไปแล้ว|เคยบอก|เคยแจ้ง|ยังไม่(ได้)?(แก้|เปลี่ยน)|ทำไม(มึง|คุณ)?(ยัง)?ไม่|ผิดอีก|ตกหล่น|ลืม|ชิบหาย|ปัญญ?าอ่อน|(ไอ่|ไอ้)สั[ดส]|สัส|ควย|เหี้ย|โง่|ใช้ยาก|อ่านยาก|ยังไม่ตรง|ไม่ใช่แบบที่|ไม่ใช่อย่างที่/;
 // Relayed subagent reports and harness notifications also arrive through UserPromptSubmit.
 export const NOT_FROM_USER_RE = /^\s*(Another Claude session sent a message|\[SYSTEM NOTIFICATION|<task-notification>|<agent-message)/;
 export const LESSON_TAGS = ['ship', 'fix', 'build', 'ui', 'db', 'change-all', 'any'];
@@ -92,6 +94,52 @@ export function readLessons() {
 export function writeLessons(list) {
   fs.mkdirSync(learningDir(), { recursive: true });
   fs.writeFileSync(path.join(learningDir(), 'lessons.json'), JSON.stringify(list, null, 1) + '\n');
+}
+
+// Tools without a prompt hook get every approved lesson in their rules; Claude gets them per intent from route-prompt.
+const LESSONS_BEGIN = '<!-- BEGIN agent-arranger lessons -->';
+const LESSONS_END = '<!-- END agent-arranger lessons -->';
+
+export function lessonFiles() {
+  const h = os.homedir();
+  return {
+    codex: path.join(h, '.codex', 'AGENTS.md'),
+    zcode: path.join(h, '.zcode', 'AGENTS.md'),
+    // Antigravity reads at most 24 KB per rules file, so lessons get a file of their own
+    antigravity: path.join(h, '.gemini', 'config', 'rules', 'agent-arranger-lessons.md'),
+  };
+}
+
+/** Write the lessons into every installed tool without a prompt hook; an empty list removes them. */
+export function publishLessons(list = readLessons()) {
+  const f = lessonFiles();
+  const body = ['# บทเรียนจากคำตำหนิของผู้ใช้ (ผู้ใช้อนุมัติแล้ว)', '', ...list.map((l) => `- ${l.text}`)].join('\n');
+  const done = [];
+  for (const file of [f.codex, f.zcode]) {
+    if (!fs.existsSync(path.dirname(file))) continue;
+    const cur = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
+    const i = cur.indexOf(LESSONS_BEGIN);
+    const j = cur.indexOf(LESSONS_END);
+    const rest = i !== -1 && j > i
+      ? (cur.slice(0, i).trimEnd() + '\n' + cur.slice(j + LESSONS_END.length).replace(/^\n+/, '')).replace(/^\n+$/, '')
+      : cur;
+    const out = list.length ? (rest.trimEnd() ? rest.trimEnd() + '\n\n' : '') + `${LESSONS_BEGIN}\n${body}\n${LESSONS_END}\n` : rest;
+    if (out === cur) continue;
+    if (out.trim()) fs.writeFileSync(file, out);
+    else fs.rmSync(file); // the file held nothing but our lessons
+    done.push(file);
+  }
+  if (fs.existsSync(path.join(os.homedir(), '.gemini'))) {
+    if (list.length) {
+      fs.mkdirSync(path.dirname(f.antigravity), { recursive: true });
+      fs.writeFileSync(f.antigravity, `---\ntrigger: always_on\n---\n\n${body}\n`);
+      done.push(f.antigravity);
+    } else if (fs.existsSync(f.antigravity)) {
+      fs.rmSync(f.antigravity);
+      done.push(f.antigravity);
+    }
+  }
+  return done;
 }
 
 /** Written by the ai-proceed skill only, read by load-handoff: <repo root or cwd>/.claude/handoff.md */
