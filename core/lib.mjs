@@ -13,6 +13,7 @@ export const DEFAULT_CONFIG = {
   guardAccount: false, // block outbound git/gh when the active gh account is not the repo's
   autoCompactWindow: 300000,
   cleanupPeriodDays: 3650,
+  optionalSkills: [], // names from skills-optional/ to install as well (node install.mjs --with a,b)
 };
 
 export function config() {

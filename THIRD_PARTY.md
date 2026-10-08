@@ -1,7 +1,7 @@
 # Third-party skills / ที่มาของ skill
 
 repo นี้เป็น **private** ใช้ภายในบริษัท ก่อนเปิด public ต้องยืนยันที่มาและสัญญาอนุญาตของทุกแถวที่มี ⚠️
-(34 จาก 43 ตัว) — ถ้ายืนยันไม่ได้ ให้ลบออก หรือเปลี่ยนเป็นติดตั้งจากต้นทางแทนการแจกในนี้
+(34 ตัว รวม skill เสริมใน `skills-optional/`) — ถ้ายืนยันไม่ได้ ให้ลบออก หรือเปลี่ยนเป็นติดตั้งจากต้นทางแทนการแจกในนี้
 
 ไม่แจก: `docx` (สัญญาอนุญาต Proprietary ของ Anthropic) — ได้มาจาก plugin `document-skills@anthropic-agent-skills` แทน
 
@@ -51,6 +51,9 @@ Plugins และ MCP ไม่ได้อยู่ใน repo นี้ ตั
 | `ui-ux-pro-max` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `uml-diagram` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `verify-merge-main` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
+| `web-perf` | cloudflare/skills — Apache-2.0 (LICENSE อยู่ในโฟลเดอร์ skill) |
+| `gha-security-review` | getsentry/skills — Apache-2.0 (LICENSE อยู่ในโฟลเดอร์ skill) |
+| `accessibility` | addyosmani/web-quality-skills — MIT (LICENSE อยู่ในโฟลเดอร์ skill) |
 | `verify-push` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `vitest` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `wayfinder` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |

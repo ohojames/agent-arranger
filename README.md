@@ -28,7 +28,7 @@ node agent-arranger/install.mjs
 | | Claude Code | Codex / ChatGPT (โหมด Codex) | Antigravity | ZCode |
 |---|---|---|---|---|
 | กฎการทำงาน (ตรวจก่อนรายงาน, แก้ให้ครบทุกจุด, รูปแบบรายงาน, ออกแบบหน้าจอ) | ✅ | ✅ | ✅ | ✅ |
-| 43 skills (+ `docx` ผ่าน plugin) | ✅ | ✅ | ✅ | ✅ |
+| 27 skills (+ `docx` ผ่าน plugin) และ skill เสริม 19 ตัวที่เลือกติดตั้งได้ | ✅ | ✅ | ✅ | ✅ |
 | hooks: ฉีดกฎตามงาน, ตรวจ typecheck ก่อนบอกเสร็จ, ตรวจดีไซน์, เก็บบทเรียน | ✅ | — | — | — |
 | ย่อ context อัตโนมัติที่ 300k ในแชทเดิม + เก็บประวัติแชทครบใน `.claude/history/` | ✅ | — | — | — |
 | plugins: superpowers, document-skills | ✅ | — | — | — |
@@ -48,6 +48,7 @@ node agent-arranger/install.mjs
 | `guardAccount` | `false` | กันการ push ด้วยบัญชี GitHub ผิด (สำหรับคนที่มีหลายบัญชี) ระบุบัญชีต่อ repo ใน `~/.agent-arranger/accounts.json` |
 | `autoCompactWindow` | `300000` | ย่อ context เมื่อใกล้ค่านี้ (100000–1000000) |
 | `cleanupPeriodDays` | `3650` | เก็บ log แชทของ Claude กี่วัน |
+| `optionalSkills` | `[]` | skill เสริมจาก `skills-optional/` ที่ติดตั้งด้วย (ตั้งผ่าน `--with`) ลบชื่อออกแล้วรันซ้ำ = ถอนตัวนั้นและคืนของเดิม |
 
 ### คำสั่งอื่น
 
@@ -58,6 +59,7 @@ node agent-arranger/install.mjs
 | ถอนการติดตั้ง (คืนไฟล์เดิมทุกไฟล์) | `node uninstall.mjs` |
 | ติดตั้ง git pre-commit (ตรวจดีไซน์ก่อน commit) ในโปรเจกต์ | `node ~/.agent-arranger/core/install-git-hooks.mjs --project <โฟลเดอร์>` |
 | ติดตั้งโดยไม่ดาวน์โหลดอะไร | `node install.mjs --offline` |
+| เพิ่ม skill เสริม (เช่น supabase, vitest) — จำไว้ใน config | `node install.mjs --with supabase,vitest` หรือ `--with all` |
 
 ### ความปลอดภัยของไฟล์เดิม
 
@@ -85,18 +87,18 @@ Restart your AI app once. The installer detects which tools you have (Claude Cod
 
 ### What you get
 
-- **All tools:** shared working rules and 43 skills (plus `docx` through the document-skills plugin).
+- **All tools:** shared working rules and 27 skills (plus `docx` through the document-skills plugin). 19 more in `skills-optional/` — skills nobody on the reference machine used in 52 sessions — install with `--with <names>` or `--with all`.
 - **Claude Code (full set):** hooks that inject task-specific rules, block "done" while typecheck fails, lint UI against the design scale and learn from repeated corrections; automatic context compaction at 300k tokens in the same chat with the full chat history kept in `.claude/history/`; the superpowers and document-skills plugins; MCP servers context7 and chrome-devtools.
 - **Antigravity:** MCP context7 (it has its own browser tool).
 - The hand-off note `.claude/handoff.md` (for a new chat, another AI tool or a teammate) is written only when you run `/ai-proceed` — never automatically.
 
 ### Configure
 
-Edit `~/.agent-arranger/config.json`, then run `node install.mjs` again: `designRules` (default `true`), `guardAccount` (`false`), `autoCompactWindow` (`300000`), `cleanupPeriodDays` (`3650`).
+Edit `~/.agent-arranger/config.json`, then run `node install.mjs` again: `designRules` (default `true`), `guardAccount` (`false`), `autoCompactWindow` (`300000`), `cleanupPeriodDays` (`3650`), `optionalSkills` (`[]`, set by `--with`).
 
 ### Other commands
 
-`node doctor.mjs` (health check) · `git pull && node install.mjs` (update) · `node uninstall.mjs` (restore every file) · `node install.mjs --offline` (no downloads).
+`node doctor.mjs` (health check) · `git pull && node install.mjs` (update) · `node uninstall.mjs` (restore every file) · `node install.mjs --offline` (no downloads) · `node install.mjs --with supabase,vitest` (add optional skills).
 
 ### Your existing files
 

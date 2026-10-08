@@ -104,7 +104,7 @@ for (const [file, info] of Object.entries(m.files)) {
 
 // 6. The toolkit itself
 if (keepData) {
-  for (const d of ['core', 'rules', 'skills', 'node_modules', 'backups']) fs.rmSync(path.join(DEST, d), { recursive: true, force: true });
+  for (const d of ['core', 'rules', 'skills', 'skills-optional', 'node_modules', 'backups']) fs.rmSync(path.join(DEST, d), { recursive: true, force: true });
   for (const f of ['manifest.json', 'package.json', 'package-lock.json']) fs.rmSync(path.join(DEST, f), { force: true });
   done.push(`เก็บข้อมูลไว้ที่ ${DEST} (learning, baselines, config)`);
 } else {

@@ -12,9 +12,9 @@ Finds what is already wrong; it does not attack. Uses `scan.mjs` in this folder 
 | Level | When | Steps |
 |---|---|---|
 | **diff** | every code change (called by ai-proceed) | `secrets --diff` |
-| **change** | change touches auth, permission, input, upload, payment, API | `secrets --diff` + `/security-review` on the diff + OWASP checklist below on changed files |
+| **change** | change touches auth, permission, input, upload, payment, API — or `.github/workflows/`, `action.yml` | `secrets --diff` + `/security-review` on the diff + OWASP checklist below on changed files; workflow files → skill `gha-security-review` on them |
 | **gate** | before push/deploy | `secrets` + `deps --prod` — any **high/critical** blocks the deploy until the user decides |
-| **full VA** | before a major release, or monthly | `secrets` + `deps` + OWASP checklist on the whole app + `web --url <local app>` if the app can run locally |
+| **full VA** | before a major release, or monthly | `secrets` + `deps` + OWASP checklist on the whole app + `web --url <local app>` if the app can run locally + `gha-security-review` if the repo has `.github/workflows/` |
 
 ## Commands (run from the project root)
 
@@ -42,4 +42,4 @@ Exit 1 = high/critical found. Full JSON (values redacted) is in `.security-repor
 
 ## Report
 
-Section 2 of the global report gets a table: `ระดับ | รายการ | ที่ไหน | วิธีแก้`. Give counts as the scanner prints them, including the package count for `deps` (advisories ≠ packages). Never paste a secret value — the scanner already redacts; keep it that way. A finding the agent judges a false positive stays in the table marked "false positive" with the reason.
+Follow the global report format: high/critical findings are bad news — one bullet each (`ระดับ · รายการ · ที่ไหน · วิธีแก้`); a fix that needs the user's call goes in the decision table; the full list stays in `.security-reports/` and is linked, not pasted. Give counts as the scanner prints them, including the package count for `deps` (advisories ≠ packages). Never paste a secret value — the scanner already redacts; keep it that way. A finding the agent judges a false positive stays in the table marked "false positive" with the reason.

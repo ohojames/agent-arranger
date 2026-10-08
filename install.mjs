@@ -4,6 +4,7 @@
 //   node install.mjs                 install / update for every AI tool found on this machine
 //   node install.mjs --only claude   limit to some tools (claude,codex,antigravity,zcode)
 //   node install.mjs --offline       skip downloads (MCP packages, plugins) — says so in the summary
+//   node install.mjs --with a,b      also install skills from skills-optional/ (or --with all); remembered in config.json
 //
 // Safe to run again: it replaces its own pieces and records what it changed in ~/.agent-arranger/manifest.json
 // so uninstall.mjs can put every file back.
@@ -19,6 +20,7 @@ import { DEFAULT_CONFIG } from './core/lib.mjs';
 const argv = process.argv.slice(2);
 const offline = argv.includes('--offline');
 const only = argv.includes('--only') ? argv[argv.indexOf('--only') + 1].split(',') : null;
+const withSkills = argv.includes('--with') ? argv[argv.indexOf('--with') + 1].split(',') : null;
 
 const [major] = process.versions.node.split('.').map(Number);
 if (major < 18) {
@@ -31,7 +33,7 @@ const note = (area, result, detail = '') => report.push([area, result, detail]);
 
 // 1. Stage the toolkit in ~/.agent-arranger (state files survive updates)
 fs.mkdirSync(DEST, { recursive: true });
-for (const d of ['core', 'rules', 'skills']) copyDir(path.join(REPO, d), path.join(DEST, d));
+for (const d of ['core', 'rules', 'skills', 'skills-optional']) copyDir(path.join(REPO, d), path.join(DEST, d));
 fs.copyFileSync(path.join(REPO, 'package.json'), path.join(DEST, 'package.json'));
 if (!fs.existsSync(path.join(DEST, 'config.json'))) writeJson(path.join(DEST, 'config.json'), DEFAULT_CONFIG);
 const cfg = loadConfig();
@@ -82,7 +84,21 @@ if (!chosen.length) {
   console.error('ไม่พบ AI tool ที่รองรับในเครื่องนี้ (Claude Code, Codex, Antigravity, ZCode) — ติดตั้ง tool ก่อนแล้วรันใหม่');
   process.exit(1);
 }
-const skillNames = fs.readdirSync(path.join(DEST, 'skills'));
+// Skills nobody used in practice live in skills-optional/ and are installed only when asked for
+const optional = fs.readdirSync(path.join(DEST, 'skills-optional'));
+if (withSkills) {
+  const asked = withSkills.includes('all') ? optional : withSkills;
+  const unknown = asked.filter((n) => !optional.includes(n));
+  if (unknown.length) {
+    console.error(`ไม่มี skill เสริมชื่อ: ${unknown.join(', ')} — ที่มี: ${optional.join(', ')}`);
+    process.exit(1);
+  }
+  cfg.optionalSkills = [...new Set([...(cfg.optionalSkills || []), ...asked])];
+  writeJson(path.join(DEST, 'config.json'), { ...readJson(path.join(DEST, 'config.json'), {}), optionalSkills: cfg.optionalSkills });
+}
+const extra = (cfg.optionalSkills || []).filter((n) => optional.includes(n));
+const skillSrc = (name) => path.join(DEST, extra.includes(name) ? 'skills-optional' : 'skills', name);
+const skillNames = [...fs.readdirSync(path.join(DEST, 'skills')), ...extra];
 for (const [id, t] of chosen) {
   track(t.rules);
   if (t.designRulesFile) {
@@ -107,10 +123,21 @@ for (const [id, t] of chosen) {
       if (backedUp) copyDir(target, path.join(DEST, 'backups', 'skills', id, name));
       list.push({ name, backedUp });
     }
-    copyDir(path.join(DEST, 'skills', name), target);
+    copyDir(skillSrc(name), target);
   }
-  m.skills[id] = list;
-  note(t.name, 'กฎ + skills', `${skillNames.length} skills → ${slash(t.skills)}`);
+  // skills an earlier install put here but no longer in the set: remove, give back what the user had
+  const dropped = list.filter((s) => !skillNames.includes(s.name));
+  for (const { name, backedUp } of dropped) {
+    const target = path.join(t.skills, name);
+    fs.rmSync(target, { recursive: true, force: true });
+    if (backedUp) {
+      const backup = path.join(DEST, 'backups', 'skills', id, name);
+      copyDir(backup, target);
+      fs.rmSync(backup, { recursive: true, force: true });
+    }
+  }
+  m.skills[id] = list.filter((s) => skillNames.includes(s.name));
+  note(t.name, 'กฎ + skills', `${skillNames.length} skills → ${slash(t.skills)}` + (dropped.length ? ` (ถอนตัวที่ไม่อยู่ในชุดแล้ว ${dropped.length})` : ''));
 }
 
 // 3. Claude Code: hooks, settings, plugins

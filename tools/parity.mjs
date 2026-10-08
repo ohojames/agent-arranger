@@ -24,10 +24,10 @@ function row(kind, onMachine, inRepo, gaps, note = '') {
 }
 
 const machineSkills = fs.readdirSync(path.join(HOME, '.claude', 'skills')).filter((n) => fs.existsSync(path.join(HOME, '.claude', 'skills', n, 'SKILL.md')));
-const repoSkills = fs.readdirSync(path.join(REPO, 'skills'));
+const repoSkills = ['skills', 'skills-optional'].flatMap((d) => fs.readdirSync(path.join(REPO, d)));
 const skillGaps = machineSkills.filter((n) => !repoSkills.includes(n) && !COVERED[n]);
 row('skills', machineSkills.length, repoSkills.length, skillGaps, Object.keys(COVERED).map((k) => `${k}: ${COVERED[k]}`).join('; '));
-const drift = machineSkills.filter((n) => repoSkills.includes(n) && dirHash(path.join(HOME, '.claude', 'skills', n)) !== dirHash(path.join(REPO, 'skills', n)));
+const drift = machineSkills.filter((n) => repoSkills.includes(n) && dirHash(path.join(HOME, '.claude', 'skills', n)) !== dirHash(path.join(REPO, fs.existsSync(path.join(REPO, 'skills', n)) ? 'skills' : 'skills-optional', n)));
 
 const machinePlugins = Object.keys(readJson(path.join(HOME, '.claude', 'plugins', 'installed_plugins.json'), {})?.plugins || {});
 row('plugins', machinePlugins.length, PLUGINS.length, machinePlugins.filter((id) => !PLUGINS.some((p) => p.id === id)));

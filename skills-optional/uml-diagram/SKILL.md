@@ -27,7 +27,7 @@ When the user asks to create or modify a UML diagram, you must operate through t
 ---
 
 ### 2. Use Case Diagram Layout & Port Specifications
-To support standard UML Use Case layouts (like in `moc_usecase.drawio`), you must configure the following properties:
+To support standard UML Use Case layouts (like in `usecase.drawio`), you must configure the following properties:
 - **System Boundary Box**:
   - Use a large rectangle (`rounded=0;whiteSpace=wrap;html=1;`) as the System Boundary enclosing the Use Cases.
 - **Diagram Title Suffix Rules**:

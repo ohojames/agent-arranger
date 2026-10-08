@@ -42,6 +42,7 @@ Print your own estimate for this task, not the table value.
 | DOC | one entry skill: deck → `slide-design` (the sub-skill it delegates to is allowed); Word/Excel/PDF → `docx`/`xlsx`/`pdf`; diagram → `diagram-design`; research → `research` | ~10k |
 
 - Load only skills on the route. Any other skill needs a one-line reason (e.g. `supabase` because the bug is in RLS).
+- Add-ons with a fixed trigger (no extra reason needed): UI work that must meet WCAG (government client, or the user mentions accessibility / a11y) → `accessibility`; slow pages, a Lighthouse or Core Web Vitals target → `web-perf` (measures with the chrome-devtools MCP before recommending anything).
 - Duplicate names (`docx` vs `document-skills:docx`): use the unprefixed one; fall back to the prefixed one if missing.
 - L has at most two planning gates: (1) batched questions + estimate, (2) design/plan approval. Outward-command stops (§5) are separate and always apply.
 

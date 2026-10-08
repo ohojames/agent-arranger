@@ -67,7 +67,8 @@ test('install adds everything for each tool found, keeps the user’s own conten
   for (const dir of ['.claude/skills', '.agents/skills', '.gemini/config/skills']) {
     for (const n of shipped) assert.ok(fs.existsSync(p(dir, n, 'SKILL.md')), `${dir}/${n}`);
   }
-  assert.doesNotMatch(fs.readFileSync(p('.claude/skills/vitest/SKILL.md'), 'utf8'), /my custom copy/);
+  assert.match(fs.readFileSync(p('.claude/skills/vitest/SKILL.md'), 'utf8'), /my custom copy/, 'optional skills are not installed by default');
+  assert.ok(!fs.existsSync(p('.claude/skills/testcontainers')), 'optional skills are not installed by default');
   assert.match(fs.readFileSync(p('.codex/AGENTS.md'), 'utf8'), /BEGIN agent-arranger/);
   const gemini = fs.readFileSync(p('.gemini/GEMINI.md'), 'utf8');
   assert.match(gemini, /^gemini notes\n/);
@@ -91,12 +92,27 @@ test('installed hooks run from ~/.agent-arranger', () => {
 });
 
 test('running install again does not duplicate hooks or lose the original backup', () => {
-  const r = node('install.mjs', '--offline');
+  const r = node('install.mjs', '--offline', '--with', 'vitest');
   assert.equal(r.status, 0, r.stderr);
   const stop = json('.claude/settings.json').hooks.Stop;
   assert.equal(stop.filter((g) => JSON.stringify(g).includes('.agent-arranger')).length, 2);
   assert.equal(stop.length, 3);
+  assert.doesNotMatch(fs.readFileSync(p('.claude/skills/vitest/SKILL.md'), 'utf8'), /my custom copy/);
   assert.match(fs.readFileSync(p('.agent-arranger/backups/skills/claude/vitest/SKILL.md'), 'utf8'), /my custom copy/);
+});
+
+test('optional skills are remembered, and dropping one gives back the user’s copy', () => {
+  assert.equal(node('install.mjs', '--offline').status, 0);
+  assert.doesNotMatch(fs.readFileSync(p('.claude/skills/vitest/SKILL.md'), 'utf8'), /my custom copy/, '--with is remembered');
+  assert.equal(node('install.mjs', '--offline', '--with', 'nope').status, 1, 'unknown names are refused');
+
+  const cfgFile = p('.agent-arranger/config.json');
+  fs.writeFileSync(cfgFile, JSON.stringify({ ...json('.agent-arranger/config.json'), optionalSkills: [] }));
+  assert.equal(node('install.mjs', '--offline').status, 0);
+  assert.match(fs.readFileSync(p('.claude/skills/vitest/SKILL.md'), 'utf8'), /my custom copy/);
+  assert.ok(!json('.agent-arranger/manifest.json').skills.claude.some((s) => s.name === 'vitest'));
+
+  assert.equal(node('install.mjs', '--offline', '--with', 'vitest').status, 0, 'can be added back');
 });
 
 test('uninstall restores the machine byte-for-byte', () => {
