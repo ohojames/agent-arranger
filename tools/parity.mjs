@@ -41,7 +41,7 @@ const repoHooks = CLAUDE_HOOKS.map((h) => h[2]);
 const uniqHooks = [...new Set(hookScripts)];
 row('hooks', uniqHooks.length, repoHooks.length, uniqHooks.filter((s) => !repoHooks.includes(s)));
 
-const handled = new Set(['hooks', 'enabledPlugins', 'extraKnownMarketplaces', 'autoCompactWindow', 'cleanupPeriodDays']);
+const handled = new Set(['hooks', 'enabledPlugins', 'extraKnownMarketplaces', 'autoCompactWindow', 'cleanupPeriodDays', 'env']);
 const keys = Object.keys(settings);
 const personal = keys.filter((k) => PERSONAL_SETTINGS.has(k));
 row('settings', keys.length, handled.size, keys.filter((k) => !handled.has(k) && !PERSONAL_SETTINGS.has(k)), personal.length ? `ค่าส่วนตัวไม่ย้าย: ${personal.join(', ')}` : '');

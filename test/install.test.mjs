@@ -115,6 +115,17 @@ test('optional skills are remembered, and dropping one gives back the user’s c
   assert.equal(node('install.mjs', '--offline', '--with', 'vitest').status, 0, 'can be added back');
 });
 
+test('--with media installs the video/image/voice set and turns HyperFrames telemetry off', () => {
+  assert.equal(node('install.mjs', '--offline', '--with', 'media').status, 0);
+  for (const n of ['hyperframes', 'media-use', 'gemini-api-dev', 'gemini-image', 'gemini-tts']) {
+    assert.ok(fs.existsSync(p('.claude/skills', n, 'SKILL.md')), `${n} installed`);
+  }
+  assert.equal(json('.claude/settings.json').env.HYPERFRAMES_NO_TELEMETRY, '1');
+  fs.writeFileSync(p('.agent-arranger/config.json'), JSON.stringify({ ...json('.agent-arranger/config.json'), optionalSkills: ['vitest'] }));
+  assert.equal(node('install.mjs', '--offline').status, 0);
+  assert.ok(!fs.existsSync(p('.claude/skills/hyperframes')), 'dropping the group removes its skills');
+});
+
 test('an approved lesson reaches the tools without a prompt hook (Codex, Antigravity)', () => {
   const add = spawnSync(process.execPath, [p('.agent-arranger/core/lessons.mjs'), 'add', '--tags', 'ui', 'สีต้องมาจาก token กลาง'], { env, encoding: 'utf8' });
   assert.equal(add.status, 0, add.stderr);

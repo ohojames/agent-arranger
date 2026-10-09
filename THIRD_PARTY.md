@@ -57,3 +57,7 @@ Plugins และ MCP ไม่ได้อยู่ใน repo นี้ ตั
 | `verify-push` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `vitest` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `wayfinder` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
+| `gemini-image` | เขียนขึ้นสำหรับชุดนี้ (MIT) |
+| `gemini-tts` | เขียนขึ้นสำหรับชุดนี้ (MIT) |
+| `gemini-api-dev` | google-gemini/gemini-skills@832c8f9 — Apache-2.0 (LICENSE อยู่ในโฟลเดอร์ skill) |
+| `hyperframes`, `hyperframes-core`, `hyperframes-cli`, `hyperframes-audio`, `media-use`, `embedded-captions`, `faceless-explainer`, `general-video` | heygen-com/hyperframes@6ae1af7 — Apache-2.0 (LICENSE อยู่ในโฟลเดอร์ skill) |

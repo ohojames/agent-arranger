@@ -11,7 +11,7 @@ The user does not remember skill names. Pick the route from the task's size, ann
 
 | Size | Predicate |
 |---|---|
-| **DOC** | Output is a deck, document, spreadsheet, diagram or research note — not code |
+| **DOC** | Output is a deck, document, spreadsheet, diagram, research note, video, image or voiceover — not code |
 | **SHIP** | Prompt asks *only* to push, merge, release or deploy existing work |
 | **BUG** | Something that used to work is failing (error, 500, wrong number, missing data) |
 | **L** | New module/flow, OR new tables, OR 3+ pages, OR schema + permission change together, OR 3+ independent work units |
@@ -39,7 +39,7 @@ Print your own estimate for this task, not the table value.
 | M | open questions in **one** message (max 5; none → skip and list defaults under "สมมติฐาน") → inline plan ≤8 lines, no plan file → `code` → verification-before-completion | ~10k |
 | L | brainstorming (questions batched) → writing-plans → executing-plans → requesting-code-review → verification-before-completion | ~35k |
 | SHIP | verify-push → the deploy checklist in the global rules ("Before deploying" / section 2) → **stop and ask** before the final push/deploy command | ~8k |
-| DOC | one entry skill: deck → `slide-design` (the sub-skill it delegates to is allowed); Word/Excel/PDF → `docx`/`xlsx`/`pdf`; diagram → `diagram-design`; research → `research` | ~10k |
+| DOC | one entry skill: deck → `slide-design` (the sub-skill it delegates to is allowed); Word/Excel/PDF → `docx`/`xlsx`/`pdf`; diagram → `diagram-design`; research → `research`; video → `hyperframes` (it routes to its own sub-skills; voice inside a video via `media-use` provider gemini); image → `gemini-image`; voiceover → `gemini-tts`. Image/voice calls are paid and send the script/images to Google — state count and cost and ask before generating. Media skill not installed → say so and give the user `node install.mjs --with media` (in the agent-arranger folder) | ~10k |
 
 - Load only skills on the route. Any other skill needs a one-line reason (e.g. `supabase` because the bug is in RLS).
 - Add-ons with a fixed trigger (no extra reason needed): UI work that must meet WCAG (government client, or the user mentions accessibility / a11y) → `accessibility`; slow pages, a Lighthouse or Core Web Vitals target → `web-perf` (measures with the chrome-devtools MCP before recommending anything).

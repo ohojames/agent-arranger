@@ -4,7 +4,8 @@
 //   node install.mjs                 install / update for every AI tool found on this machine
 //   node install.mjs --only claude   limit to some tools (claude,codex,antigravity,zcode)
 //   node install.mjs --offline       skip downloads (MCP packages, plugins) — says so in the summary
-//   node install.mjs --with a,b      also install skills from skills-optional/ (or --with all); remembered in config.json
+//   node install.mjs --with a,b      also install skills from skills-optional/ (or --with all, or --with media for
+//                                    video/image/voice); remembered in config.json
 //
 // Safe to run again: it replaces its own pieces and records what it changed in ~/.agent-arranger/manifest.json
 // so uninstall.mjs can put every file back.
@@ -86,11 +87,16 @@ if (!chosen.length) {
 }
 // Skills nobody used in practice live in skills-optional/ and are installed only when asked for
 const optional = fs.readdirSync(path.join(DEST, 'skills-optional'));
+// Named sets for --with: one word instead of a list of skills that only work together
+const GROUPS = {
+  media: ['hyperframes', 'hyperframes-core', 'hyperframes-cli', 'hyperframes-audio', 'media-use', 'embedded-captions',
+    'faceless-explainer', 'general-video', 'gemini-api-dev', 'gemini-image', 'gemini-tts'],
+};
 if (withSkills) {
-  const asked = withSkills.includes('all') ? optional : withSkills;
+  const asked = withSkills.includes('all') ? optional : withSkills.flatMap((n) => GROUPS[n] || [n]);
   const unknown = asked.filter((n) => !optional.includes(n));
   if (unknown.length) {
-    console.error(`ไม่มี skill เสริมชื่อ: ${unknown.join(', ')} — ที่มี: ${optional.join(', ')}`);
+    console.error(`ไม่มี skill เสริมชื่อ: ${unknown.join(', ')} — ที่มี: ${Object.keys(GROUPS).join(', ')}, ${optional.join(', ')}`);
     process.exit(1);
   }
   cfg.optionalSkills = [...new Set([...(cfg.optionalSkills || []), ...asked])];
@@ -169,6 +175,8 @@ if (claudeChosen) {
   writeJson(sf, s);
   setKey(sf, ['autoCompactWindow'], cfg.autoCompactWindow);
   setKey(sf, ['cleanupPeriodDays'], cfg.cleanupPeriodDays);
+  // HyperFrames sends usage data unless told not to
+  if (extra.includes('hyperframes')) setKey(sf, ['env', 'HYPERFRAMES_NO_TELEMETRY'], '1');
   note('Claude hooks', `${n} ตัว`, `ย่อ context อัตโนมัติที่ ${cfg.autoCompactWindow.toLocaleString()} · เก็บ log ${cfg.cleanupPeriodDays} วัน`);
 
   const claude = findClaude();
