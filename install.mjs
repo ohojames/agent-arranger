@@ -5,7 +5,7 @@
 //   node install.mjs --only claude   limit to some tools (claude,codex,antigravity,zcode)
 //   node install.mjs --offline       skip downloads (MCP packages, plugins) — says so in the summary
 //   node install.mjs --with a,b      also install skills from skills-optional/ (or --with all, or --with media for
-//                                    video/image/voice); remembered in config.json
+//                                    video/image/voice, --with migration for legacy data migration); remembered in config.json
 //
 // Safe to run again: it replaces its own pieces and records what it changed in ~/.agent-arranger/manifest.json
 // so uninstall.mjs can put every file back.
@@ -91,6 +91,7 @@ const optional = fs.readdirSync(path.join(DEST, 'skills-optional'));
 const GROUPS = {
   media: ['hyperframes', 'hyperframes-core', 'hyperframes-cli', 'hyperframes-audio', 'media-use', 'embedded-captions',
     'faceless-explainer', 'general-video', 'gemini-api-dev', 'gemini-image', 'gemini-tts'],
+  migration: ['legacy-migration', 'postgres-database-migration', 'sqlserver-to-postgresql-playbook', 'data-migration'],
 };
 if (withSkills) {
   const asked = withSkills.includes('all') ? optional : withSkills.flatMap((n) => GROUPS[n] || [n]);

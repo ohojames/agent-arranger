@@ -61,3 +61,7 @@ Plugins และ MCP ไม่ได้อยู่ใน repo นี้ ตั
 | `gemini-tts` | เขียนขึ้นสำหรับชุดนี้ (MIT) |
 | `gemini-api-dev` | google-gemini/gemini-skills@832c8f9 — Apache-2.0 (LICENSE อยู่ในโฟลเดอร์ skill) |
 | `hyperframes`, `hyperframes-core`, `hyperframes-cli`, `hyperframes-audio`, `media-use`, `embedded-captions`, `faceless-explainer`, `general-video` | heygen-com/hyperframes@6ae1af7 — Apache-2.0 (LICENSE อยู่ในโฟลเดอร์ skill) |
+| `legacy-migration` | เขียนขึ้นสำหรับชุดนี้ (MIT) |
+| `postgres-database-migration` | timescale/pg-aiguide@187be00 — Apache-2.0 (LICENSE อยู่ในโฟลเดอร์ skill) |
+| `sqlserver-to-postgresql-playbook` | aws-samples/sample-dbmig-aidlc@4bd3911 — MIT-0 (LICENSE อยู่ในโฟลเดอร์ skill) |
+| `data-migration` | TerminalSkills/skills@a021875 — Apache-2.0 (LICENSE อยู่ในโฟลเดอร์ skill) |

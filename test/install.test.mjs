@@ -126,6 +126,14 @@ test('--with media installs the video/image/voice set and turns HyperFrames tele
   assert.ok(!fs.existsSync(p('.claude/skills/hyperframes')), 'dropping the group removes its skills');
 });
 
+test('--with migration installs the legacy migration set', () => {
+  assert.equal(node('install.mjs', '--offline', '--with', 'migration').status, 0);
+  for (const n of ['legacy-migration', 'postgres-database-migration', 'sqlserver-to-postgresql-playbook', 'data-migration']) {
+    assert.ok(fs.existsSync(p('.claude/skills', n, 'SKILL.md')), `${n} installed`);
+  }
+  assert.ok(fs.existsSync(p('.claude/skills/legacy-migration/scripts/reconcile.mjs')));
+});
+
 test('an approved lesson reaches the tools without a prompt hook (Codex, Antigravity)', () => {
   const add = spawnSync(process.execPath, [p('.agent-arranger/core/lessons.mjs'), 'add', '--tags', 'ui', 'สีต้องมาจาก token กลาง'], { env, encoding: 'utf8' });
   assert.equal(add.status, 0, add.stderr);
