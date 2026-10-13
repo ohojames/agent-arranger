@@ -39,6 +39,7 @@ export const CLAUDE_HOOKS = [
   ['PreToolUse', 'Bash', 'guard-account.mjs', 20, (c) => c.guardAccount],
   ['Stop', null, 'verify-stop.mjs', 320, () => true],
   ['Stop', null, 'design-lint.mjs', 120, (c) => c.designRules],
+  ['Stop', null, 'bg-status.mjs', 30, () => true],
 ];
 
 /** Each AI tool: where its global rules, skills and MCP config live. */

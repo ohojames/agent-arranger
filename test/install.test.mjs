@@ -95,8 +95,8 @@ test('running install again does not duplicate hooks or lose the original backup
   const r = node('install.mjs', '--offline', '--with', 'vitest');
   assert.equal(r.status, 0, r.stderr);
   const stop = json('.claude/settings.json').hooks.Stop;
-  assert.equal(stop.filter((g) => JSON.stringify(g).includes('.agent-arranger')).length, 2);
-  assert.equal(stop.length, 3);
+  assert.equal(stop.filter((g) => JSON.stringify(g).includes('.agent-arranger')).length, 3);
+  assert.equal(stop.length, 4);
   assert.doesNotMatch(fs.readFileSync(p('.claude/skills/vitest/SKILL.md'), 'utf8'), /my custom copy/);
   assert.match(fs.readFileSync(p('.agent-arranger/backups/skills/claude/vitest/SKILL.md'), 'utf8'), /my custom copy/);
 });

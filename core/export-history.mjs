@@ -64,7 +64,7 @@ export function transcriptToMarkdown(jsonlText, id) {
       if (tools.length) parts.push(`\n> เครื่องมือ: ${tools.join(', ')}\n`);
     }
   }
-  const header = `# ประวัติแชท — session ${id}\n\nข้อความผู้ใช้ ${users} ข้อความ · สร้างจาก transcript อัตโนมัติ ห้ามแก้ด้วยมือ\n`;
+  const header = `# ประวัติแชท — session ${id}\n\nข้อความผู้ใช้ ${users} ข้อความ สร้างจาก transcript อัตโนมัติ ห้ามแก้ด้วยมือ\n`;
   return { markdown: header + parts.join(''), users, first };
 }
 

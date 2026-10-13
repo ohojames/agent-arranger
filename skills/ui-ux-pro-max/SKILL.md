@@ -1,6 +1,6 @@
 ---
 name: ui-ux-pro-max
-description: Run the UI/UX Pro Max design intelligence to audit and refine the UI/UX of the current page or component. Use when the user invokes /ui-ux-pro-max or asks to polish, restyle, or upgrade a screen to premium visual quality.
+description: Run the UI/UX Pro Max design intelligence to audit and refine the UI/UX of the current page or component. Use whenever a task changes a page, dialog or component (add, edit, restyle, polish), when the user invokes /ui-ux-pro-max, or asks to upgrade a screen to premium visual quality.
 ---
 
 # UI/UX Pro Max Refinement
@@ -28,7 +28,8 @@ hover/focus state, empty state, responsive, micro-interaction — **โดยไ
 1. เปิดไฟล์ UI ที่ user ระบุ (หรือ active document)
 2. ไล่รายการสิ่งที่ควรปรับ — hierarchy, spacing, contrast, hover/focus, empty state, ข้อความ error
 3. แก้แบบ surgical — ห้ามพัง import, form binding, event handler, หรือ server/client boundary
-4. **ห้ามเปิด browser preview เอง** เว้นแต่ user ขอ
+4. **เปิดดูหน้าจริงก่อนรายงาน** ตามกฎ 5.7 — รัน dev server (ถ้ายังไม่รัน) แคปที่ 1280 และ 375 เช็ก console
+   ถ้าเปิดดูไม่ได้ ให้บอกตรงๆ ว่าไม่ได้ดู
 5. รายงานว่าเปลี่ยนอะไรไปบ้าง และอะไรที่จงใจไม่แตะ
 
 ## ตัวอย่าง: DOT (Laravel Blade + Bootstrap 4 + jQuery, Vue 3 เฉพาะบางหน้า)

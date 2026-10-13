@@ -22,11 +22,24 @@ Work **and** deploy in one prompt ("แก้แล้ว deploy เลย"): si
 
 Size from the prompt first (provisional). After the first look at the code, if the size changed, print a new announce line and continue — but wait for the user when the new size is L or SHIP, or the overhead estimate passes 50k.
 
-## 2. Announce — the first line of your reply, always
+## 1b. Match the task against every available skill
+
+The route table below holds only generic process skills. Before announcing, read the description of **every** skill in this session's available-skills list and pick those whose domain matches the task — project-specific skills (e.g. `opl-sales-video`), stack skills (e.g. `supabase-postgres-best-practices` for RLS/schema, `playwright` for a UI flow), and fixed add-ons (§3).
+
+- Pick a skill when its description names this task's domain, stack or project. Reject it when it duplicates a route skill (e.g. `swe-agent` ≈ BUG route, `aider` ≈ `code`) or only fires on its own slash command.
+- Keep it to real candidates: list at most 3 rejected skills, the closest misses, each with one reason.
+- Every skill named in the announce line is invoked with the Skill tool. Following a skill's idea without loading it does not count — if one is skipped, say so in the report.
+
+## 2. Announce — the first lines of your reply, always
 
 ```
-งานขนาด: <DOC|SHIP|BUG|S|M|L>[+SHIP] · เส้นทาง: <skill → skill → …> · งบส่วนเพิ่ม: ~<N>k token
+งานขนาด: <DOC|SHIP|BUG|S|M|L>[+SHIP], งบส่วนเพิ่ม ~<N>k token
+เส้นทาง: <skill → skill → …>
+เลือกเพิ่ม: <skill — เหตุผล; … หรือ "ไม่มี">
+ตัดทิ้ง: <skill — เหตุผล; … ไม่เกิน 3>
 ```
+
+One item per line, never joined with ` · ` (rules §6).
 
 Print your own estimate for this task, not the table value.
 
@@ -41,8 +54,8 @@ Print your own estimate for this task, not the table value.
 | SHIP | verify-push → the deploy checklist in the global rules ("Before deploying" / section 2) → **stop and ask** before the final push/deploy command | ~8k |
 | DOC | one entry skill: deck → `slide-design` (the sub-skill it delegates to is allowed); Word/Excel/PDF → `docx`/`xlsx`/`pdf`; diagram → `diagram-design`; research → `research`; video → `hyperframes` (it routes to its own sub-skills; voice inside a video via `media-use` provider gemini); image → `gemini-image`; voiceover → `gemini-tts`. Image/voice calls are paid and send the script/images to Google — state count and cost and ask before generating. Media skill not installed → say so and give the user `node install.mjs --with media` (in the agent-arranger folder) | ~10k |
 
-- Load only skills on the route. Any other skill needs a one-line reason (e.g. `supabase` because the bug is in RLS).
-- Add-ons with a fixed trigger (no extra reason needed): UI work that must meet WCAG (government client, or the user mentions accessibility / a11y) → `accessibility`; slow pages, a Lighthouse or Core Web Vitals target → `web-perf` (measures with the chrome-devtools MCP before recommending anything).
+- Load the skills on the route plus those picked in §1b. A skill found later still needs a one-line reason (e.g. `supabase` because the bug is in RLS).
+- Add-ons with a fixed trigger (no extra reason needed): any work that changes a page, dialog or component → `ui-ux-pro-max` (reads the project's own visual language first; opens the real page at 1280/375 before reporting); UI work that must meet WCAG (government client, or the user mentions accessibility / a11y) → `accessibility`; slow pages, a Lighthouse or Core Web Vitals target → `web-perf` (measures with the chrome-devtools MCP before recommending anything).
 - Duplicate names (`docx` vs `document-skills:docx`): use the unprefixed one; fall back to the prefixed one if missing.
 - L has at most two planning gates: (1) batched questions + estimate, (2) design/plan approval. Outward-command stops (§5) are separate and always apply.
 
@@ -72,7 +85,7 @@ Outward commands always stop for a yes: push, deploy, and applying a migration o
 
 ## 6. Finish
 
-Report in the global format (rules §6: filter first — **ผล** line with one piece of evidence → at most 3 bullets for bad news / not done / user action → decide reversible things yourself; questions only for irreversible / outward / paid / personal-data steps, in a separate `### ต้องตัดสินใจ` section (≤3 yes/no items with a recommendation), repeated via `AskUserQuestion` in Claude Code — never an option table or codes like 1A). Put `ใช้: <skills actually used> · ~<N>k` inside the **ผล** line's brackets, not as a bullet.
+Report in the global format (rules §6: filter first — **ผล** line with one piece of evidence → at most 3 bullets for bad news / not done / user action → decide reversible things yourself; questions only for irreversible / outward / paid / personal-data steps, in a separate `### ต้องตัดสินใจ` section (≤3 yes/no items with a recommendation), repeated via `AskUserQuestion` in Claude Code — never an option table or codes like 1A). Put `ใช้: <skills actually used>, ~<N>k` inside the **ผล** line's brackets, not as a bullet.
 When the task changed one value in many places (colour, class, label, field name), the **ผล** line's evidence is the search count `ก่อน N → หลัง 0` (or each remaining hit with its reason). No count, no "ครบ".
 If the turn carried a `<context-size>` notice, the last line of the report says auto-compact did not run and to check `autoCompactWindow` — never clear the session.
 If a route skill is not installed in this tool (Antigravity, Cursor), follow its intent inline and say so in the report.
@@ -82,7 +95,7 @@ If a route skill is not installed in this tool (Antigravity, Cursor), follow its
 No hook writes `.claude/handoff.md`; this skill is its only writer. After the report:
 
 1. Path: `<repo root, or cwd>/.claude/handoff.md`. If it exists, copy it to `.claude/history/handoff/<YYYY-MM-DD-HH-mm-ss>.md` first.
-2. Write ≤60 lines, facts only, these sections: `เป้าหมาย` · `ทำแล้ว (หลักฐาน)` (item + check → result) · `การตัดสินใจ` · `ผู้ใช้สั่งไว้` (every correction, verbatim-short) · `ค้างอยู่ / ขั้นถัดไป` · `ไฟล์ที่เกี่ยวข้อง` · `กับดัก`. Keep items from the old note that are still open; no diffs or tool output.
+2. Write ≤60 lines, facts only, these sections: `เป้าหมาย`, `ทำแล้ว (หลักฐาน)` (item + check → result), `การตัดสินใจ`, `ผู้ใช้สั่งไว้` (every correction, verbatim-short), `ค้างอยู่ / ขั้นถัดไป`, `ไฟล์ที่เกี่ยวข้อง`, `กับดัก`. Keep items from the old note that are still open; no diffs or tool output.
 3. Claude Code: export the chat — `node "<home>/.agent-arranger/core/export-history.mjs" "<folder in <home>/.claude/projects/ holding this session's .jsonl>" "<root>/.claude/history"` (`<home>` = the user's home folder as an absolute path).
 4. Git repo → make sure `.claude/` is in `.git/info/exclude`.
 5. Add one line to the report: `บันทึก handoff: <path> (<N> บรรทัด)`. Never clear or restart the session — context is shrunk by auto-compact.

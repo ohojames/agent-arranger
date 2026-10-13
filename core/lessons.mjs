@@ -54,8 +54,8 @@ if (cmd === 'add') {
   const week = (ts) => { const d = new Date(ts); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7)); return d.toISOString().slice(0, 10); };
   const table = {};
   for (const r of rows) ((table[week(r.ts)] ??= {})[r.topic] = (table[week(r.ts)][r.topic] ?? 0) + 1);
-  console.log(`${rows.length} corrections logged · ${readLessons().length} lessons active`);
-  for (const [w, topics] of Object.entries(table).sort()) console.log(`week of ${w}: ${Object.entries(topics).map(([t, n]) => `${t} ${n}`).join(' · ')}`);
+  console.log(`${rows.length} corrections logged, ${readLessons().length} lessons active`);
+  for (const [w, topics] of Object.entries(table).sort()) console.log(`week of ${w}: ${Object.entries(topics).map(([t, n]) => `${t} ${n}`).join(', ')}`);
 } else {
   console.log(fs.readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 11).join('\n'));
   process.exit(2);

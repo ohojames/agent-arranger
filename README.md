@@ -3,7 +3,7 @@
 ติดตั้งกฎการทำงาน, skills, hooks และ MCP ชุดเดียวกันให้ AI ทุกตัวในเครื่อง ด้วยคำสั่งเดียว
 One command to give every AI coding tool on your machine the same rules, skills, hooks and MCP servers.
 
-[ภาษาไทย](#ภาษาไทย) · [English](#english)
+[ภาษาไทย](#ภาษาไทย) | [English](#english)
 
 ---
 
@@ -101,7 +101,7 @@ Edit `~/.agent-arranger/config.json`, then run `node install.mjs` again: `design
 
 ### Other commands
 
-`node doctor.mjs` (health check) · `git pull && node install.mjs` (update) · `node uninstall.mjs` (restore every file) · `node install.mjs --offline` (no downloads) · `node install.mjs --with supabase,vitest` (add optional skills).
+`node doctor.mjs` (health check), `git pull && node install.mjs` (update), `node uninstall.mjs` (restore every file), `node install.mjs --offline` (no downloads), `node install.mjs --with supabase,vitest` (add optional skills).
 
 ### Your existing files
 
