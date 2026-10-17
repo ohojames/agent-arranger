@@ -42,7 +42,7 @@ test('blocks when a background command is running and the report does not say so
   const out = run([user('build it'), ...bashBg, say('**ผล:** เสร็จแล้ว')]);
   assert.equal(out?.decision, 'block');
   assert.match(out.reason, /Build the app/);
-  assert.match(out.reason, /ยังรันอยู่/);
+  assert.match(out.reason, /มีงานที่กำลังรันอยู่\?/);
 });
 
 test('passes once the background command has finished', () => {
@@ -50,11 +50,11 @@ test('passes once the background command has finished', () => {
 });
 
 test('passes when the report already lists what is running', () => {
-  assert.equal(run([user('build it'), ...bashBg, say('**ผล:** กำลัง build\n**ยังรันอยู่:** 1 งาน — build')]), null);
+  assert.equal(run([user('build it'), ...bashBg, say('**ผล:** กำลัง build\n\n**Skills ที่ใช้:** ไม่ได้ใช้\n\n**มีงานที่กำลังรันอยู่?:** มี (build ของแอป)')]), null);
 });
 
 test('blocks when the report claims nothing is running but something is', () => {
-  const out = run([user('build it'), ...bashBg, say('**ผล:** เสร็จ\n**ยังรันอยู่:** ไม่มี')]);
+  const out = run([user('build it'), ...bashBg, say('**ผล:** เสร็จ\n\n**มีงานที่กำลังรันอยู่?:** ไม่มี')]);
   assert.equal(out?.decision, 'block');
 });
 

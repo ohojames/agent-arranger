@@ -3,7 +3,7 @@
 //
 // Reads the session transcript, finds work started this session that has not finished
 // (background commands, agents, monitors, workflows, dev servers, wakeups, cron jobs, terminal tabs)
-// and blocks the stop when the final reply does not list it under "**ยังรันอยู่:**".
+// and blocks the stop when the final reply does not list it under "**มีงานที่กำลังรันอยู่?:**".
 // ปิด: ตั้ง AGENT_ARRANGER_STOP_BGSTATUS=0
 
 import fs from 'node:fs';
@@ -111,7 +111,8 @@ function main() {
   if (!running.length) return;
 
   const reply = finalReply(lines);
-  const m = reply.match(/ยังรันอยู่:?\**:?\s*(.*)/);
+  // "ยังรันอยู่:" is the older label, still accepted
+  const m = reply.match(/(?:ยัง|กำลัง)รันอยู่\??:?\**\s*:?\s*(.*)/);
   if (m && !/^ไม่มี/.test(m[1].trim())) return;
 
   process.stdout.write(JSON.stringify({
@@ -119,7 +120,7 @@ function main() {
     reason:
       `session นี้ยังมีงานรันอยู่ ${running.length} งาน แต่รายงานไม่ได้บอก:\n` +
       running.map((r) => `- ${r}`).join('\n') +
-      '\nเขียนบรรทัด `**ยังรันอยู่:** <N งาน — แต่ละงานคืออะไร>` ต่อจากบรรทัด **ผล** ' +
+      '\nเขียนบรรทัด `**มีงานที่กำลังรันอยู่?:** มี (<งาน>, <งาน>)` เป็นบรรทัดสุดท้ายของรายงาน ' +
       'บอกว่ารายงานนี้ยังไม่ใช่ผลสุดท้ายหรือไม่ และจะแจ้งเมื่อไร ถ้างานไหนจบแล้วจริงให้ตรวจแล้วบอกว่าจบ ' +
       'ส่งเฉพาะบรรทัดนั้น ไม่ต้องเขียนรายงานซ้ำ',
   }));
