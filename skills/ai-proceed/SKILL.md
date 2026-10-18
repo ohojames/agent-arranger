@@ -35,8 +35,8 @@ The route table below holds only generic process skills. Before announcing, read
 ```
 งานขนาด: <DOC|SHIP|BUG|S|M|L>[+SHIP], งบส่วนเพิ่ม ~<N>k token
 เส้นทาง: <skill → skill → …>
-เลือกเพิ่ม: <skill — เหตุผล; … หรือ "ไม่มี">
-ตัดทิ้ง: <skill — เหตุผล; … ไม่เกิน 3>
+เลือกเพิ่ม: <skill (เหตุผล), … หรือ "ไม่มี">
+ตัดทิ้ง: <skill (เหตุผล), … ไม่เกิน 3>
 ```
 
 One item per line, never joined with ` · ` (rules §6).

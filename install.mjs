@@ -178,7 +178,7 @@ if (claudeChosen) {
   setKey(sf, ['cleanupPeriodDays'], cfg.cleanupPeriodDays);
   // HyperFrames sends usage data unless told not to
   if (extra.includes('hyperframes')) setKey(sf, ['env', 'HYPERFRAMES_NO_TELEMETRY'], '1');
-  note('Claude hooks', `${n} ตัว`, `ย่อ context อัตโนมัติที่ ${cfg.autoCompactWindow.toLocaleString()} · เก็บ log ${cfg.cleanupPeriodDays} วัน`);
+  note('Claude hooks', `${n} ตัว`, `ย่อ context อัตโนมัติที่ ${cfg.autoCompactWindow.toLocaleString()}, เก็บ log ${cfg.cleanupPeriodDays} วัน`);
 
   const claude = findClaude();
   const installedFile = path.join(HOME, '.claude', 'plugins', 'installed_plugins.json');
@@ -235,7 +235,7 @@ writeJson(manifestFile(), m);
 const notFound = Object.entries(all).filter(([id, t]) => (!only || only.includes(id)) && !t.present()).map(([, t]) => t.name);
 const w = Math.max(...report.map((r) => r[0].length));
 console.log('\nagent-arranger — ผลการติดตั้ง\n');
-for (const [a, r, d] of report) console.log(`  ${a.padEnd(w)}  ${r}${d ? '  · ' + d : ''}`);
+for (const [a, r, d] of report) console.log(`  ${a.padEnd(w)}  ${r}${d ? ': ' + d : ''}`);
 if (notFound.length) console.log(`\n  ไม่พบในเครื่อง (ข้าม): ${notFound.join(', ')}`);
 console.log(`\nตรวจทั้งระบบ:  node "${slash(path.join(REPO, 'doctor.mjs'))}"`);
 console.log('เปิดแอป AI ใหม่หนึ่งครั้งเพื่อให้ค่าใหม่มีผล');

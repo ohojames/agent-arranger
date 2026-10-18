@@ -111,10 +111,10 @@ function scanDeps() {
     if (j.error) { notes.push(`${tool}: ${j.error.summary ?? j.error.code ?? 'error'}`); return; }
     for (const [name, v] of Object.entries(j.vulnerabilities ?? {})) {
       const via = (v.via ?? []).find((x) => typeof x === 'object');
-      findings.push({ id: `vulnerable-dependency:${name}`, severity: v.severity === 'moderate' ? 'medium' : v.severity, file: tool, line: 0, evidence: `${via?.title ?? 'see advisory'}${v.fixAvailable ? ' · fix available' : ''}` });
+      findings.push({ id: `vulnerable-dependency:${name}`, severity: v.severity === 'moderate' ? 'medium' : v.severity, file: tool, line: 0, evidence: `${via?.title ?? 'see advisory'}${v.fixAvailable ? ', fix available' : ''}` });
     }
     for (const a of Object.values(j.advisories ?? {})) {
-      findings.push({ id: `vulnerable-dependency:${a.module_name}`, severity: a.severity === 'moderate' ? 'medium' : a.severity, file: tool, line: 0, evidence: `${a.title}${a.patched_versions ? ` · patched ${a.patched_versions}` : ''}` });
+      findings.push({ id: `vulnerable-dependency:${a.module_name}`, severity: a.severity === 'moderate' ? 'medium' : a.severity, file: tool, line: 0, evidence: `${a.title}${a.patched_versions ? `, patched ${a.patched_versions}` : ''}` });
     }
   };
   let ran = false;
@@ -136,7 +136,7 @@ function scanDeps() {
   for (const f of findings) { const p = f.id.split(':')[1]; if (!worst[p] || RANK[f.severity] > RANK[worst[p]]) worst[p] = f.severity; }
   const byWorst = {};
   for (const s of Object.values(worst)) byWorst[s] = (byWorst[s] ?? 0) + 1;
-  if (findings.length) notes.unshift(`${findings.length} advisories across ${Object.keys(worst).length} packages${prod.length ? ' (runtime only)' : ' (incl. dev tools; add --prod for runtime only)'} — packages by worst severity: ${['critical', 'high', 'medium', 'low'].map((s) => `${s} ${byWorst[s] ?? 0}`).join(' · ')}`);
+  if (findings.length) notes.unshift(`${findings.length} advisories across ${Object.keys(worst).length} packages${prod.length ? ' (runtime only)' : ' (incl. dev tools; add --prod for runtime only)'} — packages by worst severity: ${['critical', 'high', 'medium', 'low'].map((s) => `${s} ${byWorst[s] ?? 0}`).join(', ')}`);
   return { findings, notes };
 }
 
@@ -197,7 +197,7 @@ function report(kind, findings, notes = []) {
   }
   const count = {};
   for (const f of findings) count[f.severity] = (count[f.severity] ?? 0) + 1;
-  console.log(`## ${kind}: ${findings.length} finding(s) — ${['critical', 'high', 'medium', 'low'].map((s) => `${s} ${count[s] ?? 0}`).join(' · ')}`);
+  console.log(`## ${kind}: ${findings.length} finding(s) — ${['critical', 'high', 'medium', 'low'].map((s) => `${s} ${count[s] ?? 0}`).join(', ')}`);
   const top = [...findings].sort((a, b) => RANK[b.severity] - RANK[a.severity]).slice(0, 40);
   if (top.length) {
     console.log('| severity | id | where | evidence |\n|---|---|---|---|');
