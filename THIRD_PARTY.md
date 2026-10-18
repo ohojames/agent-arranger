@@ -4,12 +4,13 @@ skill ส่วนใหญ่ในชุดนี้เป็นผลงา�
 ตารางนี้บอกต้นทาง ผู้เขียน และสัญญาอนุญาตของทุก skill ตรวจที่มาล่าสุดเมื่อ 2026-10-18
 (วิธีตรวจและหลักฐานรายตัวอยู่ใน `research/2026-10-18-aa-skill-provenance.md` ของทะเบียนกลาง)
 
-repo นี้ยังเป็น private แถวที่มี ⚠️ ยังหาต้นทางไม่เจอ ต้องหาให้เจอหรือเอาออกก่อนเปิด public (เหลือ 1 ตัว)
+repo นี้ยังเป็น private ทุก skill ที่ยังแจกอยู่มีต้นทางหรือเหตุผลระบุไว้แล้ว
 
-ไม่แจกในนี้ ให้ติดตั้งจากต้นทาง:
+ไม่แจกในนี้:
 - `docx` สัญญาอนุญาต Proprietary ของ Anthropic ได้มาจาก plugin `document-skills@anthropic-agent-skills` แทน
 - `react-doctor` ของ millionco/react-doctor ใช้ Modified MIT ของ Million Software ซึ่งห้ามใช้เป็นข้อมูล train AI และห้ามขายเป็นบริการโดยไม่ขออนุญาต
   ติดตั้งเองด้วย `npx react-doctor@latest install`
+- `dev-pipeline` เอาออกเมื่อ 2026-10-18 เพราะหาต้นทางบน GitHub ไม่เจอ จึงให้เครดิตไม่ได้ (หลักฐานอยู่ในผลไล่ที่มา)
 
 Plugins และ MCP ไม่ได้อยู่ใน repo นี้ ตัวติดตั้งดาวน์โหลดจากต้นทาง:
 - `obra/superpowers` (plugin superpowers), `anthropics/skills` (plugin document-skills)
@@ -33,7 +34,6 @@ Plugins และ MCP ไม่ได้อยู่ใน repo นี้ ตั
 | `code` | ทำในชุดนี้ ขั้นตอนแก้โค้ดเขียนใหม่โดยอิงแนวทางของ Aider-AI/aider (Apache-2.0), OpenHands/OpenHands (MIT) และ SWE-agent/SWE-agent (MIT) ไม่ได้รวมโค้ดของเครื่องมือ |
 | `common-ground` | เขียนใหม่โดยอิงคำสั่ง common-ground ของ Jeffallan/claude-skills, MIT |
 | `data-migration` | คัดลอกจาก TerminalSkills/skills@a021875, Apache-2.0 |
-| `dev-pipeline` | ⚠️ ไม่พบต้นทางบน GitHub (ค้นประโยคเฉพาะตัว เช่น "God Developer" และ "Manual Actions Reporting" แล้วไม่เจอ) สำเนาแรกที่พบคือ workflow สำหรับงานขนส่งในโปรเจกต์ของผู้รวบรวมเมื่อ 2026-03-25 ซึ่งต่อมาถูกทำเป็นแบบทั่วไป |
 | `diagram-design` | ระบุใน SKILL.md: MIT |
 | `domain-modeling` | คัดลอกจาก mattpocock/skills@006a52b, MIT (Copyright (c) 2026 Matt Pocock) |
 | `ecc` | เขียนใหม่โดยอิง affaan-m/ECC (เดิมชื่อ everything-claude-code), MIT ฉบับนี้เป็นสรุปสั้น |
