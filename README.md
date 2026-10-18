@@ -57,7 +57,7 @@ The agent stops for your approval after analyze and after plan. It always stops 
 | | Claude Code | Codex | Antigravity | ZCode |
 |---|---|---|---|---|
 | Shared working rules: verify before reporting, change every paired screen, short reports | ✅ | ✅ | ✅ | ✅ |
-| 24 core skills, 34 optional ones (`--with <name>`) | ✅ | ✅ | ✅ | ✅ |
+| 24 core skills, 33 optional ones (`--with <name>`) | ✅ | ✅ | ✅ | ✅ |
 | Hooks that block an early "done" (typecheck, unreported background work, design rules) | ✅ | rules only | rules only | rules only |
 | Lessons: a correction you repeat becomes a draft rule. You approve it, and every tool gets it | ✅ | ✅ | ✅ | ✅ |
 | Guard against pushing with the wrong GitHub account (`guardAccount`) | ✅ | | | |
@@ -112,7 +112,7 @@ npx github:ohojames/agent-arranger
 | | Claude Code | Codex | Antigravity | ZCode |
 |---|---|---|---|---|
 | กฎการทำงาน (ตรวจก่อนรายงาน, แก้ให้ครบทุกจุด, รูปแบบรายงาน, ออกแบบหน้าจอ) | ✅ | ✅ | ✅ | ✅ |
-| skill หลัก 24 ตัว และ skill เสริม 34 ตัว (`--with <ชื่อ>`) | ✅ | ✅ | ✅ | ✅ |
+| skill หลัก 24 ตัว และ skill เสริม 33 ตัว (`--with <ชื่อ>`) | ✅ | ✅ | ✅ | ✅ |
 | hook ที่บล็อกการบอกว่าเสร็จก่อนเวลา (typecheck, งานเบื้องหลังที่ไม่ได้บอก, กฎดีไซน์) | ✅ | ใช้กฎแทน | ใช้กฎแทน | ใช้กฎแทน |
 | บทเรียนจากคำตำหนิที่ผู้ใช้อนุมัติแล้ว ใช้ได้ทุกเครื่องมือ | ✅ | ✅ | ✅ | ✅ |
 | กัน push ด้วยบัญชี GitHub ผิด (`guardAccount`) | ✅ | | | |
