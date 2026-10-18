@@ -4,7 +4,7 @@ skill ส่วนใหญ่ในชุดนี้เป็นผลงา�
 ตารางนี้บอกต้นทาง ผู้เขียน และสัญญาอนุญาตของทุก skill ตรวจที่มาล่าสุดเมื่อ 2026-10-18
 (วิธีตรวจและหลักฐานรายตัวอยู่ใน `research/2026-10-18-aa-skill-provenance.md` ของทะเบียนกลาง)
 
-repo นี้ยังเป็น private แถวที่มี ⚠️ ยังหาต้นทางไม่เจอ ต้องหาให้เจอหรือเอาออกก่อนเปิด public (เหลือ 2 ตัว)
+repo นี้ยังเป็น private แถวที่มี ⚠️ ยังหาต้นทางไม่เจอ ต้องหาให้เจอหรือเอาออกก่อนเปิด public (เหลือ 1 ตัว)
 
 ไม่แจกในนี้ ให้ติดตั้งจากต้นทาง:
 - `docx` สัญญาอนุญาต Proprietary ของ Anthropic ได้มาจาก plugin `document-skills@anthropic-agent-skills` แทน
@@ -29,11 +29,11 @@ Plugins และ MCP ไม่ได้อยู่ใน repo นี้ ตั
 | `browser-use` | ทำในชุดนี้ เป็นคู่มือใช้ browser-use/browser-use (ไม่ได้รวมโค้ดของเครื่องมือ) |
 | `building-data-apps` | ระบุใน SKILL.md: Apache-2.0 |
 | `claude-bughunter` | เขียนใหม่โดยอิง elementalsouls/Claude-BugHunter, MIT ฉบับนี้เป็นสรุปสั้น ใช้ฉบับเต็มจากต้นทาง |
-| `claude-gauge` | ⚠️ ต้นทางบน GitHub ยังหาไม่เจอ (ชื่อพ้องกับเครื่องมือวัดโควตาหลายตัว แต่ไม่ใช่ skill) |
+| `claude-gauge` | เขียนใหม่โดยอิงชื่อและจุดประสงค์ของ mil-orb/claude-gauge, MIT (Claude Code plugin ชื่อเดียวกันที่วัด token และค่าใช้จ่าย สร้างก่อนสำเนาแรกของเรา ฉบับนี้เป็นสรุปสั้น จึงเทียบข้อความยืนยันไม่ได้) |
 | `code` | ทำในชุดนี้ ขั้นตอนแก้โค้ดเขียนใหม่โดยอิงแนวทางของ Aider-AI/aider (Apache-2.0), OpenHands/OpenHands (MIT) และ SWE-agent/SWE-agent (MIT) ไม่ได้รวมโค้ดของเครื่องมือ |
 | `common-ground` | เขียนใหม่โดยอิงคำสั่ง common-ground ของ Jeffallan/claude-skills, MIT |
 | `data-migration` | คัดลอกจาก TerminalSkills/skills@a021875, Apache-2.0 |
-| `dev-pipeline` | ⚠️ ต้นทางบน GitHub ยังหาไม่เจอ |
+| `dev-pipeline` | ⚠️ ไม่พบต้นทางบน GitHub (ค้นประโยคเฉพาะตัว เช่น "God Developer" และ "Manual Actions Reporting" แล้วไม่เจอ) สำเนาแรกที่พบคือ workflow สำหรับงานขนส่งในโปรเจกต์ของผู้รวบรวมเมื่อ 2026-03-25 ซึ่งต่อมาถูกทำเป็นแบบทั่วไป |
 | `diagram-design` | ระบุใน SKILL.md: MIT |
 | `domain-modeling` | คัดลอกจาก mattpocock/skills@006a52b, MIT (Copyright (c) 2026 Matt Pocock) |
 | `ecc` | เขียนใหม่โดยอิง affaan-m/ECC (เดิมชื่อ everything-claude-code), MIT ฉบับนี้เป็นสรุปสั้น |
