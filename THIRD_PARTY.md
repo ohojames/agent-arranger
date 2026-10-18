@@ -14,7 +14,6 @@ Plugins และ MCP ไม่ได้อยู่ใน repo นี้ ตั
 | `accidental-data-loss-prevention` | ระบุใน SKILL.md: Apache-2.0 |
 | `ai-proceed` | เขียนขึ้นสำหรับชุดนี้ (MIT) |
 | `ai-tools-knowledge` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
-| `aider` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `browser-use` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `building-data-apps` | ระบุใน SKILL.md: Apache-2.0 |
 | `claude-bughunter` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
@@ -32,7 +31,6 @@ Plugins และ MCP ไม่ได้อยู่ใน repo นี้ ตั
 | `midscene` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `ml-best-practices` | ระบุใน SKILL.md: Apache-2.0 |
 | `notebook-guidance` | ระบุใน SKILL.md: Apache-2.0 |
-| `openhands` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `playwright` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `ponytail` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `pptx-slides` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
@@ -45,7 +43,6 @@ Plugins และ MCP ไม่ได้อยู่ใน repo นี้ ตั
 | `slide-design` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `supabase` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `supabase-postgres-best-practices` | ระบุใน SKILL.md: MIT |
-| `swe-agent` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `testcontainers` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `token-saver` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |
 | `ui-ux-pro-max` | ⚠️ ไม่ระบุที่มา/สัญญาอนุญาต — ต้องยืนยันก่อนเปิด public |

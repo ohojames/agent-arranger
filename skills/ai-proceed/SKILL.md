@@ -26,7 +26,7 @@ Size from the prompt first (provisional). After the first look at the code, if t
 
 The route table below holds only generic process skills. Before announcing, read the description of **every** skill in this session's available-skills list and pick those whose domain matches the task — project-specific skills (e.g. `opl-sales-video`), stack skills (e.g. `supabase-postgres-best-practices` for RLS/schema, `playwright` for a UI flow), and fixed add-ons (§3).
 
-- Pick a skill when its description names this task's domain, stack or project. Reject it when it duplicates a route skill (e.g. `swe-agent` ≈ BUG route, `aider` ≈ `code`) or only fires on its own slash command.
+- Pick a skill when its description names this task's domain, stack or project. Reject it when it duplicates a route skill (e.g. `claude-bughunter` ≈ `security-check`) or only fires on its own slash command.
 - Keep it to real candidates: list at most 3 rejected skills, the closest misses, each with one reason.
 - Every skill named in the announce line is invoked with the Skill tool. Following a skill's idea without loading it does not count — if one is skipped, say so in the report.
 

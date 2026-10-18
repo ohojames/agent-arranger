@@ -73,7 +73,7 @@ description: Run full quality gates before merging to main — branch divergence
 
 | ช่วง | Skill |
 |------|-------|
-| แก้โค้ด inner loop | `/code` / `/aider` / `/ponytail` |
+| แก้โค้ด inner loop | `/code` / `/ponytail` |
 | ก่อน push branch | `/verify-push` |
 | ก่อน merge เข้า base | `/verify-merge-main` |
 | push ขึ้น remote | skill push ของโปรเจกต์นั้น (เช่น `/pushgithub` ใน DOT) |
