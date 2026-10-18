@@ -1,112 +1,147 @@
 # agent-arranger
 
-ติดตั้งกฎการทำงาน, skills, hooks และ MCP ชุดเดียวกันให้ AI ทุกตัวในเครื่อง ด้วยคำสั่งเดียว
-One command to give every AI coding tool on your machine the same rules, skills, hooks and MCP servers.
+Every stage has to prove it is done.
 
-[ภาษาไทย](#ภาษาไทย) | [English](#english)
+AI coding agents say "done" too early. aa installs one set of rules, skills and hooks into every AI coding tool on your machine (Claude Code, Codex, Google Antigravity, ZCode). In Claude Code, the hooks refuse to let the agent finish until it shows proof.
 
----
+[English](#english) | [ภาษาไทย](#ภาษาไทย)
 
-## ภาษาไทย
+## What it caught
 
-### ติดตั้ง
+On the author's machine, across 55 Claude Code sessions from 2026-10-06 to 2026-10-18, aa stopped the agent 45 times in 11 sessions:
 
-ต้องมี [Node.js 18+](https://nodejs.org) และ git
+| Hook | Times | The agent was about to |
+|---|---:|---|
+| `bg-status` | 32 | report done while background work was still running |
+| `design-lint` | 12 | finish UI work that broke the project's design rules |
+| `verify-stop` | 1 | say done while typecheck was failing |
+
+That is one developer's history, not a benchmark. To count your own after a few days of use:
 
 ```bash
-git clone https://github.com/ohojames/agent-arranger.git
+node ~/.agent-arranger/core/stats.mjs
 ```
 
-```bash
-node agent-arranger/install.mjs
-```
-
-เสร็จแล้วปิดแล้วเปิดแอป AI ใหม่หนึ่งครั้ง ตัวติดตั้งจะหาเองว่าเครื่องมี AI ตัวไหนบ้าง และติดตั้งเฉพาะตัวที่มี
-
-### ได้อะไรบ้าง
-
-| | Claude Code | Codex / ChatGPT (โหมด Codex) | Antigravity | ZCode |
-|---|---|---|---|---|
-| กฎการทำงาน (ตรวจก่อนรายงาน, แก้ให้ครบทุกจุด, รูปแบบรายงาน, ออกแบบหน้าจอ) | ✅ | ✅ | ✅ | ✅ |
-| 27 skills (+ `docx` ผ่าน plugin) และ skill เสริม 19 ตัวที่เลือกติดตั้งได้ | ✅ | ✅ | ✅ | ✅ |
-| hooks: ฉีดกฎตามงาน, ตรวจ typecheck ก่อนบอกเสร็จ, ตรวจดีไซน์, จับคำตำหนิ (รวมคำด่า) แล้วร่างบทเรียนให้กดอนุมัติ | ✅ | — | — | — |
-| บทเรียนที่ผู้ใช้อนุมัติแล้ว ใช้ทุกเครื่องมือ (`lessons.mjs add`) | ✅ | ✅ | ✅ | ✅ |
-| ย่อ context อัตโนมัติที่ 300k ในแชทเดิม + เก็บประวัติแชทครบใน `.claude/history/` | ✅ | — | — | — |
-| plugins: superpowers, document-skills | ✅ | — | — | — |
-| MCP: context7, chrome-devtools | ✅ | — | context7 | — |
-
-ช่องที่เป็น — คือ AI ตัวนั้นยังไม่รองรับกลไกนี้ กฎในไฟล์จะบอกให้ AI ทำตามเองแทน
-
-บันทึกส่งต่องาน (`.claude/handoff.md` สำหรับแชทใหม่ / AI ตัวอื่น / เพื่อนร่วมทีม) เขียนเฉพาะตอนสั่ง `/ai-proceed` เท่านั้น ไม่มีระบบอัตโนมัติไปเขียนทับ
-
-### ตั้งค่า
-
-แก้ `~/.agent-arranger/config.json` แล้วรัน `node install.mjs` ซ้ำ
-
-| ค่า | ค่าเริ่มต้น | ความหมาย |
-|---|---|---|
-| `designRules` | `true` | กฎหน้าจอ (Tailwind) + ตัวตรวจดีไซน์ ปิดได้ถ้าทีมไม่ใช้ Tailwind |
-| `guardAccount` | `false` | กันการ push ด้วยบัญชี GitHub ผิด (สำหรับคนที่มีหลายบัญชี) ระบุบัญชีต่อ repo ใน `~/.agent-arranger/accounts.json` |
-| `autoCompactWindow` | `300000` | ย่อ context เมื่อใกล้ค่านี้ (100000–1000000) |
-| `cleanupPeriodDays` | `3650` | เก็บ log แชทของ Claude กี่วัน |
-| `optionalSkills` | `[]` | skill เสริมจาก `skills-optional/` ที่ติดตั้งด้วย (ตั้งผ่าน `--with`) ลบชื่อออกแล้วรันซ้ำ = ถอนตัวนั้นและคืนของเดิม |
-
-### คำสั่งอื่น
-
-| ทำอะไร | คำสั่ง |
-|---|---|
-| ตรวจว่าทุกชิ้นทำงาน | `node doctor.mjs` |
-| อัปเดต | `git pull` แล้ว `node install.mjs` |
-| ถอนการติดตั้ง (คืนไฟล์เดิมทุกไฟล์) | `node uninstall.mjs` |
-| ติดตั้ง git pre-commit (ตรวจดีไซน์ก่อน commit) ในโปรเจกต์ | `node ~/.agent-arranger/core/install-git-hooks.mjs --project <โฟลเดอร์>` |
-| ติดตั้งโดยไม่ดาวน์โหลดอะไร | `node install.mjs --offline` |
-| เพิ่ม skill เสริม (เช่น supabase, vitest) — จำไว้ใน config | `node install.mjs --with supabase,vitest` หรือ `--with all` |
-| ชุดทำวิดีโอ/ภาพ/เสียงพากย์ไทย (HyperFrames + Gemini) — ใช้ key จาก env `GEMINI_API_KEY` | `node install.mjs --with media` |
-| ชุดย้ายข้อมูลจากระบบเดิมเข้า Postgres/Supabase (ถอดภาษาไทย TIS-620, กระทบยอดรายคอลัมน์) | `node install.mjs --with migration` |
-
-### ความปลอดภัยของไฟล์เดิม
-
-- ตัวติดตั้งแตะเฉพาะส่วนของตัวเอง: บล็อก `<!-- BEGIN agent-arranger -->` ในไฟล์กฎ, hook ที่ชี้ไป `~/.agent-arranger`, คีย์ที่ระบุในตารางข้างบน
-- ทุกไฟล์ที่แก้ถูกสำรองไว้ใน `~/.agent-arranger/backups/` และ `uninstall.mjs` คืนค่าเดิมให้ (มี test ยืนยันว่าคืนได้ตรงทุกไบต์)
-- skill ชื่อซ้ำกับที่คุณมีอยู่จะถูกสำรองไว้ก่อน แล้วคืนให้ตอนถอน
-
----
+It reads Claude Code's local transcripts and sends nothing anywhere.
 
 ## English
 
 ### Install
 
-Requires [Node.js 18+](https://nodejs.org) and git.
+Requires [Node.js 18+](https://nodejs.org).
 
 ```bash
-git clone https://github.com/ohojames/agent-arranger.git
+npx github:ohojames/agent-arranger
 ```
 
-```bash
-node agent-arranger/install.mjs
-```
+Or clone the repo and run `node agent-arranger/install.mjs`. Restart your AI app once afterwards. The installer detects which tools you have and installs only for those.
 
-Restart your AI app once. The installer detects which tools you have (Claude Code, Codex / ChatGPT desktop in Codex mode, Google Antigravity, ZCode) and installs only for those.
+### From analysis to handover
+
+Ask for a whole project ("take this from requirements to a demo deck") and `/ai-proceed` runs seven stages. A stage counts as done only after its exit check has run.
+
+| Stage | Exit check |
+|---|---|
+| Analyze | every requirement has acceptance criteria, no open questions |
+| Plan | every requirement maps to a plan task, and each task names its check |
+| Dev | typecheck and build pass |
+| Test | every acceptance criterion has a test that was run |
+| Doc | every command, URL and screenshot in the document was run or taken from the real system |
+| Presentation | every slide was rendered and looked at |
+| Video (optional) | the rendered file plays, see [knowledge/video-stage.md](knowledge/video-stage.md) |
+
+The agent stops for your approval after analyze and after plan. It always stops before a push, a deploy or a change to a remote database.
 
 ### What you get
 
-- **All tools:** shared working rules and 27 skills (plus `docx` through the document-skills plugin). 34 more in `skills-optional/` — install with `--with <names>`, `--with migration` (legacy data → Postgres/Supabase, Thai TIS-620 decoding, per-column reconciliation), `--with media` (HyperFrames video + Gemini image and Thai voiceover, key from env `GEMINI_API_KEY`) or `--with all`.
-- **Claude Code (full set):** hooks that inject task-specific rules, block "done" while typecheck fails, lint UI against the design scale and catch corrections (swearing included), drafting a lesson the user approves with one click — approved lessons are also written into the Codex, Antigravity and ZCode rules; automatic context compaction at 300k tokens in the same chat with the full chat history kept in `.claude/history/`; the superpowers and document-skills plugins; MCP servers context7 and chrome-devtools.
-- **Antigravity:** MCP context7 (it has its own browser tool).
-- The hand-off note `.claude/handoff.md` (for a new chat, another AI tool or a teammate) is written only when you run `/ai-proceed` — never automatically.
+| | Claude Code | Codex | Antigravity | ZCode |
+|---|---|---|---|---|
+| Shared working rules: verify before reporting, change every paired screen, short reports | ✅ | ✅ | ✅ | ✅ |
+| 24 core skills, 34 optional ones (`--with <name>`) | ✅ | ✅ | ✅ | ✅ |
+| Hooks that block an early "done" (typecheck, unreported background work, design rules) | ✅ | rules only | rules only | rules only |
+| Lessons: a correction you repeat becomes a draft rule. You approve it, and every tool gets it | ✅ | ✅ | ✅ | ✅ |
+| Guard against pushing with the wrong GitHub account (`guardAccount`) | ✅ | | | |
+| Auto-compact at 300k in the same chat, chat history kept in `.claude/history/` | ✅ | | | |
+| Plugins superpowers and document-skills, MCP context7 and chrome-devtools | ✅ | | context7 | |
 
-### Configure
+Where a tool has no hook mechanism, the rules ask the agent to run the same checks itself.
 
-Edit `~/.agent-arranger/config.json`, then run `node install.mjs` again: `designRules` (default `true`), `guardAccount` (`false`), `autoCompactWindow` (`300000`), `cleanupPeriodDays` (`3650`), `optionalSkills` (`[]`, set by `--with`).
+### Commands
 
-### Other commands
+| Do | Command |
+|---|---|
+| Health check | `node ~/.agent-arranger/doctor.mjs` |
+| What the hooks caught | `node ~/.agent-arranger/core/stats.mjs` |
+| Uninstall and restore every file | `npx -p github:ohojames/agent-arranger agent-arranger-uninstall`, or `node uninstall.mjs` in a clone |
+| Install without downloads | add `--offline` |
+| Optional skills | add `--with supabase,vitest`, `--with media` (video), `--with migration` or `--with all` |
 
-`node doctor.mjs` (health check), `git pull && node install.mjs` (update), `node uninstall.mjs` (restore every file), `node install.mjs --offline` (no downloads), `node install.mjs --with supabase,vitest` (add optional skills).
+Settings live in `~/.agent-arranger/config.json`: `designRules` (default `true`), `guardAccount` (`false`), `autoCompactWindow` (`300000`), `cleanupPeriodDays` (`3650`), `optionalSkills` (`[]`). Run the installer again after editing.
 
 ### Your existing files
 
-The installer only touches its own marked block, hooks pointing at `~/.agent-arranger`, and the settings listed above. Every file it changes is backed up and `uninstall.mjs` restores it — a test checks the machine comes back byte-for-byte.
+The installer only touches its own marked block in each rules file, hooks pointing at `~/.agent-arranger`, and the settings above. Every file it changes is backed up first, and uninstall puts it back. A test checks that the restored files match byte for byte.
 
-### Licence
+### Credits
 
-MIT for the toolkit. Skills keep their authors' licences — see [THIRD_PARTY.md](THIRD_PARTY.md).
+Most skills here were written by other people. aa collects them, sets them up for each tool and adds the rules and hooks around them. The source and licence of every skill are listed in [THIRD_PARTY.md](THIRD_PARTY.md), which is still being completed. The toolkit itself is MIT.
+
+---
+
+## ภาษาไทย
+
+aa ติดตั้งกฎการทำงาน skills และ hooks ชุดเดียวกันให้ AI ทุกตัวในเครื่อง ใน Claude Code มี hook ที่ไม่ยอมให้ AI บอกว่าเสร็จจนกว่าจะแสดงหลักฐาน
+
+### ติดตั้ง
+
+ต้องมี [Node.js 18+](https://nodejs.org)
+
+```bash
+npx github:ohojames/agent-arranger
+```
+
+หรือ clone repo แล้วรัน `node agent-arranger/install.mjs` เสร็จแล้วปิดแล้วเปิดแอป AI ใหม่หนึ่งครั้ง ตัวติดตั้งจะหาเองว่าเครื่องมี AI ตัวไหนบ้าง และติดตั้งเฉพาะตัวที่มี
+
+### ทำทั้งโปรเจกต์
+
+สั่ง `/ai-proceed` พร้อมบอกว่าให้ทำทั้งโปรเจกต์ AI จะทำ 7 ขั้น ได้แก่ analyze, plan, dev, test, doc, presentation และ video (ถ้าติดตั้งชุดเสริม)
+แต่ละขั้นนับว่าเสร็จเมื่อรันเงื่อนไขผ่านของขั้นนั้นแล้วเท่านั้น และจะหยุดให้อนุมัติหลัง analyze กับหลัง plan
+
+### ได้อะไรบ้าง
+
+| | Claude Code | Codex | Antigravity | ZCode |
+|---|---|---|---|---|
+| กฎการทำงาน (ตรวจก่อนรายงาน, แก้ให้ครบทุกจุด, รูปแบบรายงาน, ออกแบบหน้าจอ) | ✅ | ✅ | ✅ | ✅ |
+| skill หลัก 24 ตัว และ skill เสริม 34 ตัว (`--with <ชื่อ>`) | ✅ | ✅ | ✅ | ✅ |
+| hook ที่บล็อกการบอกว่าเสร็จก่อนเวลา (typecheck, งานเบื้องหลังที่ไม่ได้บอก, กฎดีไซน์) | ✅ | ใช้กฎแทน | ใช้กฎแทน | ใช้กฎแทน |
+| บทเรียนจากคำตำหนิที่ผู้ใช้อนุมัติแล้ว ใช้ได้ทุกเครื่องมือ | ✅ | ✅ | ✅ | ✅ |
+| กัน push ด้วยบัญชี GitHub ผิด (`guardAccount`) | ✅ | | | |
+| ย่อ context อัตโนมัติที่ 300k ในแชทเดิม และเก็บประวัติแชทใน `.claude/history/` | ✅ | | | |
+| plugins superpowers, document-skills และ MCP context7, chrome-devtools | ✅ | | context7 | |
+
+### คำสั่งอื่น
+
+| ทำอะไร | คำสั่ง |
+|---|---|
+| ตรวจว่าทุกชิ้นทำงาน | `node ~/.agent-arranger/doctor.mjs` |
+| ดูว่า hook บล็อกไปกี่ครั้ง | `node ~/.agent-arranger/core/stats.mjs` |
+| ถอนการติดตั้ง (คืนไฟล์เดิมทุกไฟล์) | `npx -p github:ohojames/agent-arranger agent-arranger-uninstall` |
+| ติดตั้ง git pre-commit (ตรวจดีไซน์ก่อน commit) ในโปรเจกต์ | `node ~/.agent-arranger/core/install-git-hooks.mjs --project <โฟลเดอร์>` |
+| ติดตั้งโดยไม่ดาวน์โหลดอะไร | เติม `--offline` |
+| เพิ่ม skill เสริม (จำไว้ใน config) | เติม `--with supabase,vitest` หรือ `--with all` |
+| ชุดทำวิดีโอ ภาพ และเสียงพากย์ (HyperFrames และ Gemini ใช้ key จาก env `GEMINI_API_KEY`) | เติม `--with media` |
+| ชุดย้ายข้อมูลจากระบบเดิมเข้า Postgres/Supabase (ถอดภาษาไทย TIS-620, กระทบยอดรายคอลัมน์) | เติม `--with migration` |
+
+ตั้งค่าที่ `~/.agent-arranger/config.json` แล้วรันตัวติดตั้งซ้ำ ค่าที่มีคือ `designRules`, `guardAccount` (กัน push ด้วยบัญชี GitHub ผิด ระบุบัญชีต่อ repo ใน `~/.agent-arranger/accounts.json`), `autoCompactWindow`, `cleanupPeriodDays` และ `optionalSkills`
+
+### ความปลอดภัยของไฟล์เดิม
+
+ตัวติดตั้งแตะเฉพาะบล็อก `<!-- BEGIN agent-arranger -->` ในไฟล์กฎ, hook ที่ชี้ไป `~/.agent-arranger` และค่าที่ระบุข้างบน
+ทุกไฟล์ที่แก้ถูกสำรองไว้ใน `~/.agent-arranger/backups/` และการถอนการติดตั้งจะคืนให้ มี test ยืนยันว่าไฟล์ที่คืนตรงทุกไบต์
+skill ชื่อซ้ำกับที่คุณมีอยู่จะถูกสำรองไว้ก่อน แล้วคืนให้ตอนถอน
+
+บันทึกส่งต่องาน `.claude/handoff.md` เขียนเฉพาะตอนสั่ง `/ai-proceed` เท่านั้น
+
+### เครดิต
+
+skill ส่วนใหญ่ในชุดนี้เป็นผลงานของคนอื่น aa รวบรวม ตั้งค่าให้แต่ละเครื่องมือ และเพิ่มกฎกับ hook รอบๆ ที่มาและสัญญาอนุญาตของทุก skill อยู่ใน [THIRD_PARTY.md](THIRD_PARTY.md) (กำลังเติมให้ครบ) ส่วนตัวชุดเครื่องมือเป็น MIT

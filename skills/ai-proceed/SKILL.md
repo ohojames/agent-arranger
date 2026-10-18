@@ -11,6 +11,7 @@ The user does not remember skill names. Pick the route from the task's size, ann
 
 | Size | Predicate |
 |---|---|
+| **PROJECT** | A whole delivery across several stages: the user asks to take a project from analysis or requirements through to handover (docs, presentation, video), e.g. a turnkey project or "ทำทั้งโปรเจกต์" |
 | **DOC** | Output is a deck, document, spreadsheet, diagram, research note, video, image or voiceover — not code |
 | **SHIP** | Prompt asks *only* to push, merge, release or deploy existing work |
 | **BUG** | Something that used to work is failing (error, 500, wrong number, missing data) |
@@ -33,7 +34,7 @@ The route table below holds only generic process skills. Before announcing, read
 ## 2. Announce — the first lines of your reply, always
 
 ```
-งานขนาด: <DOC|SHIP|BUG|S|M|L>[+SHIP], งบส่วนเพิ่ม ~<N>k token
+งานขนาด: <PROJECT|DOC|SHIP|BUG|S|M|L>[+SHIP], งบส่วนเพิ่ม ~<N>k token
 เส้นทาง: <skill → skill → …>
 เลือกเพิ่ม: <skill (เหตุผล), … หรือ "ไม่มี">
 ตัดทิ้ง: <skill (เหตุผล), … ไม่เกิน 3>
@@ -52,12 +53,27 @@ Print your own estimate for this task, not the table value.
 | M | open questions in **one** message (max 5; none → skip and list defaults under "สมมติฐาน") → inline plan ≤8 lines, no plan file → `code` → verification-before-completion | ~10k |
 | L | brainstorming (questions batched) → writing-plans → executing-plans → requesting-code-review → verification-before-completion | ~35k |
 | SHIP | verify-push → the deploy checklist in the global rules ("Before deploying" / section 2) → **stop and ask** before the final push/deploy command | ~8k |
-| DOC | one entry skill: deck → `slide-design` (the sub-skill it delegates to is allowed); Word/Excel/PDF → `docx`/`xlsx`/`pdf`; diagram → `diagram-design`; research → `research`; video → `hyperframes` (it routes to its own sub-skills; voice inside a video via `media-use` provider gemini); image → `gemini-image`; voiceover → `gemini-tts`. Image/voice calls are paid and send the script/images to Google — state count and cost and ask before generating. Media skill not installed → say so and give the user `node install.mjs --with media` (in the agent-arranger folder) | ~10k |
+| PROJECT | the stages in §3c, in order; each stage is sized and routed as its own task (dev = S/M/L, doc/presentation = DOC) | ~10k per stage plus each stage's route |
+| DOC | one entry skill: deck → `slide-design` (the sub-skill it delegates to is allowed); Word/Excel/PDF → `docx`/`xlsx`/`pdf`; diagram → `diagram-design`; research → `research`; video → `hyperframes` (it routes to its own sub-skills; voice inside a video via `media-use` provider gemini); image → `gemini-image`; voiceover → `gemini-tts`. Image/voice calls are paid and send the script/images to Google — state count and cost and ask before generating. Media skill not installed → say so and give the user `npx github:ohojames/agent-arranger --with media` (or `node install.mjs --with media` in a clone) | ~10k |
 
 - Load the skills on the route plus those picked in §1b. A skill found later still needs a one-line reason (e.g. `supabase` because the bug is in RLS).
 - Add-ons with a fixed trigger (no extra reason needed): any work that changes a page, dialog or component → `ui-ux-pro-max` (reads the project's own visual language first; opens the real page at 1280/375 before reporting); UI work that must meet WCAG (government client, or the user mentions accessibility / a11y) → `accessibility`; slow pages, a Lighthouse or Core Web Vitals target → `web-perf` (measures with the chrome-devtools MCP before recommending anything).
 - Duplicate names (`docx` vs `document-skills:docx`): use the unprefixed one; fall back to the prefixed one if missing.
 - L has at most two planning gates: (1) batched questions + estimate, (2) design/plan approval. Outward-command stops (§5) are separate and always apply.
+
+## 3c. PROJECT stages
+
+A stage is done only when its exit check has been run and its result is quoted; the next stage starts after that. Stage outputs go in the project's `docs/project/` folder so later stages and the handover read the same files. A whole project passes the 50k budget, so stop for approval after **analyze** and after **plan**, then run the remaining stages without further gates except the outward-command stops (§5).
+
+| Stage | Skills | Exit check |
+|---|---|---|
+| analyze | `grilling`, `domain-modeling`, `diagram-design` | requirements.md where every requirement has acceptance criteria, no open question left, ER or flow diagram drawn from the real schema or process |
+| plan | `writing-plans` | every requirement id appears in at least one plan task, and each task names its check |
+| dev | `code` | typecheck and build pass for the project's stack (the verify-stop hook enforces this in Claude Code) |
+| test | `playwright`, `verification-before-completion` | every acceptance criterion maps to a test that was run; paste the run output |
+| doc | `docx`, `pdf`, `diagram-design` | every command, URL and screenshot in the document was run, opened or taken from the running system |
+| presentation | `slide-design` | every slide rendered to an image and looked at, no overflowing text, numbers match the docs |
+| video | none in the core set, see `<home>/.agent-arranger/knowledge/video-stage.md` | the file plays: `ffprobe` reads a duration above zero; without the media set, say the stage was skipped |
 
 ## 3b. Security layer (skill `security-check`, levels defined there)
 

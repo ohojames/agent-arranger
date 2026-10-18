@@ -5,9 +5,10 @@
   "description": "One-command setup of shared rules, skills, hooks and MCP servers for Claude Code, Codex, Antigravity and ZCode",
   "license": "MIT",
   "type": "module",
+  "bin": { "agent-arranger": "install.mjs", "agent-arranger-uninstall": "uninstall.mjs" },
   "engines": { "node": ">=18" },
   "scripts": {
-    "test": "node --test test/context.test.mjs test/learning.test.mjs test/install.test.mjs skills/security-check/test/scan.test.mjs"
+    "test": "node --test test/context.test.mjs test/learning.test.mjs test/install.test.mjs test/stats.test.mjs test/project-route.test.mjs skills/security-check/test/scan.test.mjs"
   },
   "dependencies": {
     "@upstash/context7-mcp": "^4.1.1",

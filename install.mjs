@@ -34,8 +34,9 @@ const note = (area, result, detail = '') => report.push([area, result, detail]);
 
 // 1. Stage the toolkit in ~/.agent-arranger (state files survive updates)
 fs.mkdirSync(DEST, { recursive: true });
-for (const d of ['core', 'rules', 'skills', 'skills-optional']) copyDir(path.join(REPO, d), path.join(DEST, d));
-fs.copyFileSync(path.join(REPO, 'package.json'), path.join(DEST, 'package.json'));
+// setup/ and doctor.mjs too: installed through npx, REPO is a cache folder that does not stay around
+for (const d of ['core', 'rules', 'skills', 'skills-optional', 'knowledge', 'setup']) copyDir(path.join(REPO, d), path.join(DEST, d));
+for (const f of ['package.json', 'doctor.mjs']) fs.copyFileSync(path.join(REPO, f), path.join(DEST, f));
 if (!fs.existsSync(path.join(DEST, 'config.json'))) writeJson(path.join(DEST, 'config.json'), DEFAULT_CONFIG);
 const cfg = loadConfig();
 const m = loadManifest();
@@ -237,5 +238,5 @@ const w = Math.max(...report.map((r) => r[0].length));
 console.log('\nagent-arranger — ผลการติดตั้ง\n');
 for (const [a, r, d] of report) console.log(`  ${a.padEnd(w)}  ${r}${d ? ': ' + d : ''}`);
 if (notFound.length) console.log(`\n  ไม่พบในเครื่อง (ข้าม): ${notFound.join(', ')}`);
-console.log(`\nตรวจทั้งระบบ:  node "${slash(path.join(REPO, 'doctor.mjs'))}"`);
+console.log(`\nตรวจทั้งระบบ:  node "${slash(path.join(DEST, 'doctor.mjs'))}"`);
 console.log('เปิดแอป AI ใหม่หนึ่งครั้งเพื่อให้ค่าใหม่มีผล');
