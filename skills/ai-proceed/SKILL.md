@@ -1,6 +1,6 @@
 ---
 name: ai-proceed
-description: Use when the user types /ai-proceed, or says "จัดการให้จบ", "ทำให้เลย", "ดำเนินการต่อเอง" or similar without naming any skill — they want the agent to choose the skills itself and carry the task to a verified result.
+description: Use for every request that changes or creates something (fix, add, edit, build, write, deploy, make a deck, document or video), whether or not the user names a skill, and when the user types /ai-proceed or says "จัดการให้จบ", "ทำให้เลย", "ดำเนินการต่อเอง". It sizes the task, picks the skills and carries it to a verified result. Skip it for questions, explanations and advice that change nothing.
 ---
 
 # ai-proceed — one command, right-sized process
@@ -49,7 +49,7 @@ Print your own estimate for this task, not the table value.
 | Size | Route | Typical overhead |
 |---|---|---:|
 | S | `code` → verification-before-completion | ~3k |
-| BUG | systematic-debugging → reproduce (failing test; or a failing check such as curl / log / SQL when the cause is env, RLS or data) → `code` → verification-before-completion | ~10k |
+| BUG | systematic-debugging → reproduce (failing test; or a failing check such as curl / log / SQL when the cause is env, RLS or data) and capture before (§3d) → `code` → capture after (§3d) → verification-before-completion | ~13k |
 | M | open questions in **one** message (max 5; none → skip and list defaults under "สมมติฐาน") → inline plan ≤8 lines, no plan file → `code` → verification-before-completion | ~10k |
 | L | brainstorming (questions batched) → writing-plans → executing-plans → requesting-code-review → verification-before-completion | ~35k |
 | SHIP | verify-push → the deploy checklist in the global rules ("Before deploying" / section 2) → **stop and ask** before the final push/deploy command | ~8k |
@@ -85,6 +85,24 @@ A stage is done only when its exit check has been run and its result is quoted; 
 
 Overhead: diff ~1k, change ~8k, gate ~3k. Write the added level into the announce line's route.
 
+## 3d. Change evidence: a boxed screenshot and a review link
+
+The user checks a change by looking at it, so a bug fix always ends with a picture of where it changed. Capture must not make the task slow: the whole capture work of one task gets **2 minutes**.
+
+| Task | Capture |
+|---|---|
+| BUG with a screen | required: one shot before (while reproducing) and one after (before verification), changed element boxed |
+| BUG without a screen (API, script, job, data) | required: evidence page with the failing check before and the passing check after, plus the diff |
+| S, M, L that change a page | only when the page is already open for the UI check: box the changed element in the 1280 shot |
+| no page change, DOC, SHIP | none |
+
+1. Open the page in the browser tool this agent has (chrome-devtools MCP, or the Claude app browser) at 1280 wide.
+2. Paste `<home>/.agent-arranger/core/mark.js` into the page and call `aaMark([{ selector, label }])`. chrome-devtools: `evaluate_script` with `() => { <file>; return aaMark([...]) }`; Claude app browser: `javascript_tool`. Box the wrapper that holds the label and the value, so the frame does not cross text. Every returned item must say `inView: true`.
+3. Take a viewport screenshot to a file (chrome-devtools `take_screenshot` with `filePath`; `fullPage` times out on background tabs). Then `aaUnmark()` before touching the page again.
+4. Run `node "<home>/.agent-arranger/core/evidence.mjs" --title "<task>" --files <only the files this task changed> [--url <page>] [--before <shot>] [--after <shot>] [--check-before <fail output>] [--check-after <pass output>]`. It writes `.claude/evidence/<stamp>-<slug>/` and prints a `report` line; that line is one bullet of the report. In Claude desktop also send the after shot (or the evidence page) with SendUserFile.
+
+Over 2 minutes, or blocked by something you cannot do yourself (a real password, a server that will not start, no browser tool in this agent): stop capturing and write `ไม่ได้ capture เพราะ <reason>`. For a BUG that sentence goes in the **ผล** line. Never skip silently. How each tool does this: `<home>/.agent-arranger/knowledge/change-evidence.md`.
+
 ## 4. Overhead budget: 50k tokens
 
 Overhead = skill loading + questions + plans + subagents + reviews. The work itself (reading, editing, required checks and screenshots) is not overhead.
@@ -108,7 +126,7 @@ If a route skill is not installed in this tool (Antigravity, Cursor), follow its
 
 ## 7. Handoff note — written only here
 
-No hook writes `.claude/handoff.md`; this skill is its only writer. After the report:
+No hook writes `.claude/handoff.md`; this skill is its only writer. Write it only when the user called this skill by name (/ai-proceed, "จัดการให้จบ", "ทำให้เลย", "ดำเนินการต่อเอง"), not when it started on its own for an ordinary request. After the report:
 
 1. Path: `<repo root, or cwd>/.claude/handoff.md`. If it exists, copy it to `.claude/history/handoff/<YYYY-MM-DD-HH-mm-ss>.md` first.
 2. Write ≤60 lines, facts only, these sections: `เป้าหมาย`, `ทำแล้ว (หลักฐาน)` (item + check → result), `การตัดสินใจ`, `ผู้ใช้สั่งไว้` (every correction, verbatim-short), `ค้างอยู่ / ขั้นถัดไป`, `ไฟล์ที่เกี่ยวข้อง`, `กับดัก`. Keep items from the old note that are still open; no diffs or tool output.
@@ -126,5 +144,6 @@ No hook writes `.claude/handoff.md`; this skill is its only writer. After the re
 | Treating "deploy" as approval for the final command | SHIP always stops before the outward command |
 | Running a migration on a remote DB inside an M task | Outward command: stop and ask |
 | Inventing a unit test for an env/RLS failure | Reproduce with a failing check |
+| Reporting a bug fix with no picture and no reason | Capture per §3d, or `ไม่ได้ capture เพราะ …` in the ผล line |
 | Loading 2–3 overlapping slide/doc skills | DOC uses one entry skill |
 | Announcing the table's budget for a big task | Print your own estimate |
