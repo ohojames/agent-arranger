@@ -12,7 +12,7 @@ On the author's machine, across 55 Claude Code sessions from 2026-10-06 to 2026-
 
 | Hook | Times | The agent was about to |
 |---|---:|---|
-| `bg-status` | 32 | report done while background work was still running |
+| `bg-status` (removed 2026-10-21) | 32 | report done while background work was still running |
 | `design-lint` | 12 | finish UI work that broke the project's design rules |
 | `verify-stop` | 1 | say done while typecheck was failing |
 
@@ -58,7 +58,7 @@ The agent stops for your approval after analyze and after plan. It always stops 
 |---|---|---|---|---|
 | Shared working rules: verify before reporting, change every paired screen, short reports | ✅ | ✅ | ✅ | ✅ |
 | 24 core skills, 32 optional ones (`--with <name>`) | ✅ | ✅ | ✅ | ✅ |
-| Hooks that block an early "done" (typecheck, unreported background work, design rules) | ✅ | rules only | rules only | rules only |
+| Hooks that block an early "done" (typecheck, design rules) | ✅ | rules only | rules only | rules only |
 | Lessons: a correction you repeat becomes a draft rule. You approve it, and every tool gets it | ✅ | ✅ | ✅ | ✅ |
 | Guard against pushing with the wrong GitHub account (`guardAccount`) | ✅ | | | |
 | Auto-compact at 300k in the same chat, chat history kept in `.claude/history/` | ✅ | | | |
@@ -113,7 +113,7 @@ npx github:ohojames/agent-arranger
 |---|---|---|---|---|
 | กฎการทำงาน (ตรวจก่อนรายงาน, แก้ให้ครบทุกจุด, รูปแบบรายงาน, ออกแบบหน้าจอ) | ✅ | ✅ | ✅ | ✅ |
 | skill หลัก 24 ตัว และ skill เสริม 32 ตัว (`--with <ชื่อ>`) | ✅ | ✅ | ✅ | ✅ |
-| hook ที่บล็อกการบอกว่าเสร็จก่อนเวลา (typecheck, งานเบื้องหลังที่ไม่ได้บอก, กฎดีไซน์) | ✅ | ใช้กฎแทน | ใช้กฎแทน | ใช้กฎแทน |
+| hook ที่บล็อกการบอกว่าเสร็จก่อนเวลา (typecheck, กฎดีไซน์) | ✅ | ใช้กฎแทน | ใช้กฎแทน | ใช้กฎแทน |
 | บทเรียนจากคำตำหนิที่ผู้ใช้อนุมัติแล้ว ใช้ได้ทุกเครื่องมือ | ✅ | ✅ | ✅ | ✅ |
 | กัน push ด้วยบัญชี GitHub ผิด (`guardAccount`) | ✅ | | | |
 | ย่อ context อัตโนมัติที่ 300k ในแชทเดิม และเก็บประวัติแชทใน `.claude/history/` | ✅ | | | |
